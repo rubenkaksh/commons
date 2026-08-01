@@ -12,6 +12,7 @@ abstract class LoginStrings {
   String get emailLabel;
   String get passwordLabel;
   String get submitLabel;
+  String get googleSignInLabel;
   String get fillDemoLabel;
   String get demoEmail;
   String get demoPassword;
@@ -41,6 +42,13 @@ abstract class LoginAsyncData {
 /// Behavioural contract: what happens on submit and after authentication.
 abstract class LoginServiceCallbacks {
   Future<void> login({required String email, required String password});
+
+  /// Google sign-in flow. Only invoked when [LoginScreen.enableGoogleSignIn]
+  /// is true; apps opting in override this (e.g. `google_sign_in` with the
+  /// app's clientId).
+  Future<void> googleSignIn() {
+    throw UnsupportedError('Google sign-in is not enabled.');
+  }
 
   /// Called once when the user becomes authenticated (see [LoginAsyncData.isAuthenticated]).
   /// The app owns navigation here (e.g. `context.goNamed(home)`).

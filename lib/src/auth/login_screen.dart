@@ -21,11 +21,16 @@ class LoginScreen extends m.StatefulWidget {
     required this.displayTexts,
     required this.asyncData,
     required this.callbacks,
+    this.enableGoogleSignIn = false,
   });
 
   final LoginStrings displayTexts;
   final LoginAsyncData asyncData;
   final LoginServiceCallbacks callbacks;
+
+  /// Opt-in Google sign-in. When true, a Google button is rendered and
+  /// [LoginServiceCallbacks.googleSignIn] is invoked on tap.
+  final bool enableGoogleSignIn;
 
   @override
   m.State<LoginScreen> createState() => _LoginScreenState();
@@ -131,11 +136,24 @@ class _LoginScreenState extends m.State<LoginScreen> {
           m.ValueListenableBuilder<bool>(
             valueListenable: widget.asyncData.isLoading,
             builder: (m.BuildContext c, bool loading, m.Widget? _) {
-              return FilledButton(
-                text: widget.displayTexts.submitLabel,
-                icon: loading ? null : const m.Icon(m.Icons.login),
-                isLoading: loading,
-                onPressed: loading ? null : _onSubmit,
+              return m.Column(
+                children: <m.Widget>[
+                  FilledButton(
+                    text: widget.displayTexts.submitLabel,
+                    icon: loading ? null : const m.Icon(m.Icons.login),
+                    isLoading: loading,
+                    onPressed: loading ? null : _onSubmit,
+                  ),
+                  if (widget.enableGoogleSignIn) ...<m.Widget>[
+                    const m.SizedBox(height: 12),
+                    FilledButton(
+                      text: widget.displayTexts.googleSignInLabel,
+                      icon: const m.Icon(m.Icons.g_mobiledata),
+                      isLoading: loading,
+                      onPressed: loading ? null : _onGoogleSignIn,
+                    ),
+                  ],
+                ],
               );
             },
           ),
@@ -153,6 +171,10 @@ class _LoginScreenState extends m.State<LoginScreen> {
   void _fillDemoCredentials() {
     _emailController.text = widget.displayTexts.demoEmail;
     _passwordController.text = widget.displayTexts.demoPassword;
+  }
+
+  Future<void> _onGoogleSignIn() async {
+    await widget.callbacks.googleSignIn();
   }
 
   Future<void> _onSubmit() async {

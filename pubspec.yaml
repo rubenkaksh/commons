@@ -1,6 +1,6 @@
 name: commons
 description: "Shared atomic widgets and design-system pieces for forkable-derived apps."
-version: 0.4.0
+version: 0.5.0
 homepage:
 
 environment:

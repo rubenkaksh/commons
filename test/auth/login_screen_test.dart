@@ -17,6 +17,8 @@ class _FakeStrings implements LoginStrings {
   @override
   String get submitLabel => 'Sign in';
   @override
+  String get googleSignInLabel => 'Continue with Google';
+  @override
   String get fillDemoLabel => 'Fill demo credentials';
   @override
   String get demoEmail => 'demo@test.dev';
@@ -59,6 +61,7 @@ class _FakeCallbacks implements LoginServiceCallbacks {
   String? submittedPassword;
   int loginCalls = 0;
   int navigateCalls = 0;
+  int googleSignInCalls = 0;
 
   @override
   Future<void> login({
@@ -71,6 +74,11 @@ class _FakeCallbacks implements LoginServiceCallbacks {
   }
 
   @override
+  Future<void> googleSignIn() async {
+    googleSignInCalls++;
+  }
+
+  @override
   void navigateForward(m.BuildContext context) {
     navigateCalls++;
   }
@@ -80,12 +88,14 @@ m.Widget _wrap({
   required LoginStrings strings,
   required LoginAsyncData asyncData,
   required LoginServiceCallbacks callbacks,
+  bool enableGoogleSignIn = false,
 }) {
   return m.MaterialApp(
     home: LoginScreen(
       displayTexts: strings,
       asyncData: asyncData,
       callbacks: callbacks,
+      enableGoogleSignIn: enableGoogleSignIn,
     ),
   );
 }
@@ -202,6 +212,41 @@ void main() {
     // The signal is consumed — a second frame does not re-navigate.
     await tester.pump();
     expect(callbacks.navigateCalls, 1);
+  });
+
+  testWidgets('google sign-in button is hidden by default', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(
+      _wrap(
+        strings: _FakeStrings(),
+        asyncData: _FakeAsyncData(),
+        callbacks: _FakeCallbacks(),
+      ),
+    );
+
+    expect(find.text('Continue with Google'), findsNothing);
+  });
+
+  testWidgets('google sign-in button calls googleSignIn when enabled', (
+    WidgetTester tester,
+  ) async {
+    final _FakeCallbacks callbacks = _FakeCallbacks();
+    await tester.pumpWidget(
+      _wrap(
+        strings: _FakeStrings(),
+        asyncData: _FakeAsyncData(),
+        callbacks: callbacks,
+        enableGoogleSignIn: true,
+      ),
+    );
+
+    expect(find.text('Continue with Google'), findsOneWidget);
+
+    await tester.tap(find.text('Continue with Google'));
+    await tester.pumpAndSettle();
+
+    expect(callbacks.googleSignInCalls, 1);
   });
 
   testWidgets('validators reject invalid input without calling login', (
