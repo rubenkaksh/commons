@@ -2,6 +2,8 @@
 library;
 
 export 'src/network/dio_api_client.dart';
+export 'src/theme/component_themes.dart';
+export 'src/theme/typography.dart';
 
 export 'src/widgets/bottom_sheet.dart';
 export 'src/widgets/buttons.dart';
