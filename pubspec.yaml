@@ -1,6 +1,6 @@
 name: commons
 description: "Shared atomic widgets and design-system pieces for forkable-derived apps."
-version: 0.5.0
+version: 0.6.0
 homepage:
 
 environment:
@@ -11,11 +11,13 @@ dependencies:
   dio: ^5.9.2
   flutter:
     sdk: flutter
+  google_sign_in: ^7.2.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
+  google_sign_in_platform_interface: ^3.1.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
