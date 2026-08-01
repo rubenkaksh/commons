@@ -9,8 +9,11 @@ class TextInput extends m.StatelessWidget {
     this.enabled = true,
     this.obscure = false,
     this.onChanged,
+    this.onFieldSubmitted,
     this.controller,
     this.validator,
+    this.keyboardType,
+    this.textInputAction,
   });
 
   final String label;
@@ -19,8 +22,11 @@ class TextInput extends m.StatelessWidget {
   final bool enabled;
   final bool obscure;
   final m.ValueChanged<String>? onChanged;
+  final m.ValueChanged<String>? onFieldSubmitted;
   final m.TextEditingController? controller;
   final m.FormFieldValidator<String>? validator;
+  final m.TextInputType? keyboardType;
+  final m.TextInputAction? textInputAction;
 
   @override
   m.Widget build(m.BuildContext context) {
@@ -33,8 +39,11 @@ class TextInput extends m.StatelessWidget {
         errorText: error,
       ),
       onChanged: onChanged,
+      onFieldSubmitted: onFieldSubmitted,
       controller: controller,
       validator: validator,
+      keyboardType: keyboardType,
+      textInputAction: textInputAction,
     );
   }
 }
@@ -46,16 +55,22 @@ class PasswordInput extends m.StatefulWidget {
     this.hint,
     this.error,
     this.onChanged,
+    this.onFieldSubmitted,
     this.controller,
     this.validator,
+    this.keyboardType,
+    this.textInputAction,
   });
 
   final String label;
   final String? hint;
   final String? error;
   final m.ValueChanged<String>? onChanged;
+  final m.ValueChanged<String>? onFieldSubmitted;
   final m.TextEditingController? controller;
   final m.FormFieldValidator<String>? validator;
+  final m.TextInputType? keyboardType;
+  final m.TextInputAction? textInputAction;
 
   @override
   m.State<PasswordInput> createState() => _PasswordInputState();
@@ -81,8 +96,11 @@ class _PasswordInputState extends m.State<PasswordInput> {
         ),
       ),
       onChanged: widget.onChanged,
+      onFieldSubmitted: widget.onFieldSubmitted,
       controller: widget.controller,
       validator: widget.validator,
+      keyboardType: widget.keyboardType,
+      textInputAction: widget.textInputAction,
     );
   }
 }

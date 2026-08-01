@@ -1,6 +1,7 @@
 /// Shared atomic widgets & design-system pieces for forkable-derived apps.
 library;
 
+export 'src/auth/login_screen.dart';
 export 'src/network/dio_api_client.dart';
 export 'src/theme/component_themes.dart';
 export 'src/theme/typography.dart';
