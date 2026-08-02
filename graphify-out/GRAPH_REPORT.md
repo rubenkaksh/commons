@@ -1,15 +1,16 @@
-# Graph Report - /Users/rubenk/projects/commons  (2026-08-02)
+# Graph Report - commons  (2026-08-02)
 
 ## Corpus Check
-- cluster-only mode - file stats not available
+- 37 files · ~8,740 words
+- Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 401 nodes · 482 edges · 19 communities
+- 406 nodes · 485 edges · 22 communities (20 shown, 2 thin omitted)
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 3 edges (avg confidence: 0.78)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `b49e76b0`
+- Built from commit: `3bc955b7`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -28,11 +29,14 @@
 - feedback.dart
 - widgets/typography.dart
 - buttons.dart
-- button_themes.dart
+- navigation_themes.dart
 - surface_themes.dart
 - status_badge.dart
 - m.StatelessWidget
 - section_header.dart
+- input_themes.dart
+- graphify.js
+- AGENTS.md
 
 ## God Nodes (most connected - your core abstractions)
 1. `Session — 2026-08-01` - 25 edges
@@ -66,20 +70,20 @@
 - **Google sign-in stack (service + plugin impl + opt-in)** — lib_src_auth_google_sign_in_service_googlesigninservice, lib_src_auth_google_sign_in_service_impl_googlesigninserviceimpl, lib_src_auth_google_sign_in_service_googlesigninresult, docs_sessions_2026_08_01_google_sign_in_opt_in [INFERRED 0.90]
 - **commons extraction from forkable template family** — external_repo_khelam, external_repo_forkable, pubspec_commons [INFERRED 0.95]
 
-## Communities (19 total, 0 thin omitted)
+## Communities (22 total, 2 thin omitted)
 
 ### Community 0 - "login_screen_test.dart"
 Cohesion: 0.05
-Nodes (44): Finder, FilledButton, package:commons/commons.dart, package:flutter_test/flutter_test.dart, required LoginServiceCallbacks callbacks,
-  bool, String get, appBarTitle, demoEmail (+36 more)
+Nodes (38): Finder, FilledButton, package:commons/commons.dart, package:flutter_test/flutter_test.dart, required LoginServiceCallbacks callbacks,
+  bool, String get, appBarTitle, demoEmail (+30 more)
 
 ### Community 1 - "package:flutter/material.dart"
 Cohesion: 0.05
-Nodes (35): decoration, dropdownMenu, InputThemes, searchBar, searchView, expansionTile, ListThemes, listTile (+27 more)
+Nodes (31): ButtonThemes, elevated, fab, filled, iconButton, outlined, segmented, text (+23 more)
 
 ### Community 2 - "login_screen.dart"
-Cohesion: 0.05
-Nodes (39): FormState, GlobalKey, asyncData, build, _buildForm, callbacks, createState, dispose (+31 more)
+Cohesion: 0.04
+Nodes (45): FormState, GlobalKey, asyncData, build, _buildForm, callbacks, createState, dispose (+37 more)
 
 ### Community 3 - "inputs.dart"
 Cohesion: 0.06
@@ -125,9 +129,9 @@ Nodes (11): Body, BodySize, build, Headline, HeadlineSize, Label, LabelSize, siz
 Cohesion: 0.18
 Nodes (10): build, GhostButton, icon, IconButton, isLoading, onPressed, OutlineButton, PrimaryButton (+2 more)
 
-### Community 14 - "button_themes.dart"
-Cohesion: 0.22
-Nodes (8): ButtonThemes, elevated, fab, filled, iconButton, outlined, segmented, text
+### Community 14 - "navigation_themes.dart"
+Cohesion: 0.25
+Nodes (7): appBar, bottomNavigationBar, navigationBar, navigationDrawer, navigationRail, NavigationThemes, tabBar
 
 ### Community 15 - "surface_themes.dart"
 Cohesion: 0.22
@@ -145,24 +149,29 @@ Nodes (7): EmptyView, ErrorView, LoadingView, StateSwitcher, SearchInput, TextIn
 Cohesion: 0.29
 Nodes (6): build, leadingIcon, onTap, SectionHeader, title, VoidCallback?
 
+### Community 19 - "input_themes.dart"
+Cohesion: 0.33
+Nodes (5): decoration, dropdownMenu, InputThemes, searchBar, searchView
+
 ## Knowledge Gaps
-- **236 isolated node(s):** `email`, `displayName`, `idToken`, `operator`, `hashCode` (+231 more)
+- **237 isolated node(s):** `graphify`, `email`, `displayName`, `idToken`, `operator` (+232 more)
   These have ≤1 connection - possible missing edges or undocumented components.
+- **2 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `Session — 2026-08-01` connect `Session — 2026-08-01` to `commons.dart`, `dio_api_client_test.dart`?**
-  _High betweenness centrality (0.203) - this node is a cross-community bridge._
+  _High betweenness centrality (0.198) - this node is a cross-community bridge._
 - **Why does `LoginScreen` connect `Session — 2026-08-01` to `login_screen.dart`, `inputs.dart`?**
-  _High betweenness centrality (0.085) - this node is a cross-community bridge._
+  _High betweenness centrality (0.083) - this node is a cross-community bridge._
 - **Why does `GoogleSignInServiceImpl` connect `Session — 2026-08-01` to `google_sign_in_service_impl_test.dart`, `google_sign_in_service_impl.dart`?**
-  _High betweenness centrality (0.051) - this node is a cross-community bridge._
-- **What connects `email`, `displayName`, `idToken` to the rest of the system?**
-  _236 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _High betweenness centrality (0.050) - this node is a cross-community bridge._
+- **What connects `graphify`, `email`, `displayName` to the rest of the system?**
+  _237 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `login_screen_test.dart` be split into smaller, more focused modules?**
-  _Cohesion score 0.045328399629972246 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.0524390243902439 - nodes in this community are weakly interconnected._
 - **Should `package:flutter/material.dart` be split into smaller, more focused modules?**
-  _Cohesion score 0.046511627906976744 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.05263157894736842 - nodes in this community are weakly interconnected._
 - **Should `login_screen.dart` be split into smaller, more focused modules?**
-  _Cohesion score 0.05 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.043478260869565216 - nodes in this community are weakly interconnected._

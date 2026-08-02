@@ -170,13 +170,28 @@
     "semantic_hash": "e0b429a27bd86f8a3f1d0542e5f70362"
   },
   "docs/sessions/2026-08-01.md": {
-    "mtime": 1785593643.0724602,
-    "ast_hash": "cd8d4b493536e2f6739d895b7592609e",
-    "semantic_hash": "cd8d4b493536e2f6739d895b7592609e"
+    "mtime": 1785653356.9632928,
+    "ast_hash": "fc18f34187f250a853f5883034363f14",
+    "semantic_hash": ""
   },
   "pubspec.yaml": {
     "mtime": 1785593566.8107376,
     "ast_hash": "e471a207c36033529a953e39ed6ddd1c",
     "semantic_hash": "e471a207c36033529a953e39ed6ddd1c"
+  },
+  ".opencode/opencode.json": {
+    "mtime": 1785653322.4910178,
+    "ast_hash": "abcc8b9dcd80bca5f9dde6d9f0c3ae79",
+    "semantic_hash": ""
+  },
+  ".opencode/plugins/graphify.js": {
+    "mtime": 1785653322.4909265,
+    "ast_hash": "3ea725724bc8ebe483c9f13d6aa1124f",
+    "semantic_hash": ""
+  },
+  "AGENTS.md": {
+    "mtime": 1785653322.490722,
+    "ast_hash": "6a47d64fcc136324ca395065a707ef76",
+    "semantic_hash": ""
   }
 }
