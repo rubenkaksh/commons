@@ -22,6 +22,7 @@ class LoginScreen extends m.StatefulWidget {
     required this.asyncData,
     required this.callbacks,
     this.enableGoogleSignIn = false,
+    this.onRegisterTap,
   });
 
   final LoginStrings displayTexts;
@@ -31,6 +32,11 @@ class LoginScreen extends m.StatefulWidget {
   /// Opt-in Google sign-in. When true, a Google button is rendered and
   /// [LoginServiceCallbacks.googleSignIn] is invoked on tap.
   final bool enableGoogleSignIn;
+
+  /// Opt-in registration entry. When non-null, a "Create an account" button
+  /// is rendered under the form and invoked on tap (the app owns navigation,
+  /// e.g. pushing its register screen).
+  final m.VoidCallback? onRegisterTap;
 
   @override
   m.State<LoginScreen> createState() => _LoginScreenState();
@@ -163,6 +169,13 @@ class _LoginScreenState extends m.State<LoginScreen> {
             icon: const m.Icon(m.Icons.key_outlined),
             onPressed: _fillDemoCredentials,
           ),
+          if (widget.onRegisterTap != null) ...<m.Widget>[
+            const m.SizedBox(height: 12),
+            m.TextButton(
+              onPressed: widget.onRegisterTap,
+              child: m.Text(widget.displayTexts.registerLabel),
+            ),
+          ],
         ],
       ),
     );

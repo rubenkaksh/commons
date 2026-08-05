@@ -17,6 +17,9 @@ abstract class LoginStrings {
   String get demoEmail;
   String get demoPassword;
 
+  /// Label of the opt-in registration button (see [LoginScreen.onRegisterTap]).
+  String get registerLabel => 'Create an account';
+
   /// Returns an error message for an invalid email, or `null` when valid.
   m.FormFieldValidator<String> get emailValidator;
 
