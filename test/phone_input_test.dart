@@ -4,11 +4,11 @@ import 'package:commons/commons.dart' hide FilledButton, IconButton, OutlineButt
 
 void main() {
   group('PhoneInput', () {
-    testWidgets('renders with +91 prefix and label', (tester) async {
+    testWidgets('renders with +977 prefix and label', (tester) async {
       await tester.pumpWidget(MaterialApp(
         home: Scaffold(body: PhoneInput()),
       ));
-      expect(find.text('+91'), findsOneWidget);
+      expect(find.text('+977'), findsOneWidget);
       expect(find.text('Phone Number'), findsOneWidget);
     });
 

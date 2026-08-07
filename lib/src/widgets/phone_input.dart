@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart' as m;
 
-/// A phone number input field with +91 prefix and Indian mobile validation.
+/// A phone number input field with +977 prefix and 10-digit mobile validation.
 ///
-/// Validates 10-digit Indian mobile numbers starting with 6-9.
+/// Validates 10-digit mobile numbers.
 /// Use [PhoneInput.isValid] to check validity programmatically.
 class PhoneInput extends m.StatelessWidget {
   const PhoneInput({
@@ -16,11 +16,11 @@ class PhoneInput extends m.StatelessWidget {
   final String? error;
   final m.TextEditingController? controller;
 
-  static final RegExp _indianMobileRegex = RegExp(r'^[6-9]\d{9}$');
+  static final RegExp _mobileRegex = RegExp(r'^[6-9]\d{9}$');
 
-  /// Returns true if [phone] is a valid 10-digit Indian mobile number.
+  /// Returns true if [phone] is a valid 10-digit mobile number.
   static bool isValid(String phone) {
-    return _indianMobileRegex.hasMatch(phone);
+    return _mobileRegex.hasMatch(phone);
   }
 
   @override
@@ -37,7 +37,7 @@ class PhoneInput extends m.StatelessWidget {
         prefixIcon: const m.Padding(
           padding: m.EdgeInsets.only(left: 12, right: 8),
           child: m.Text(
-            '+91',
+            '+977',
             style: m.TextStyle(fontSize: 16),
           ),
         ),
