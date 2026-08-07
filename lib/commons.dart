@@ -10,6 +10,7 @@ export 'src/theme/typography.dart';
 
 export 'src/widgets/bottom_sheet.dart';
 export 'src/widgets/buttons.dart';
+export 'src/widgets/dropdown_input.dart';
 export 'src/widgets/feedback.dart';
 export 'src/widgets/inputs.dart';
 export 'src/widgets/phone_input.dart';
