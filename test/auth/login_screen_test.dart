@@ -19,6 +19,8 @@ class _FakeStrings implements LoginStrings {
   @override
   String get googleSignInLabel => 'Continue with Google';
   @override
+  String get registerLabel => 'Create an account';
+  @override
   String get fillDemoLabel => 'Fill demo credentials';
   @override
   String get demoEmail => 'demo@test.dev';
