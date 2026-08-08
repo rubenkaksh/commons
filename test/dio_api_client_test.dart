@@ -142,6 +142,173 @@ void main() {
     });
   });
 
+  group('DioApiClient GET cache', () {
+    test('serves a repeated getJsonList within the TTL from memory', () async {
+      final _CountingJsonAdapter adapter = _CountingJsonAdapter();
+      final Dio dio = Dio()..httpClientAdapter = adapter;
+      final DioApiClient client = DioApiClient(
+        baseUrl: 'https://example.test',
+        dio: dio,
+      );
+
+      final List<Map<String, dynamic>> first = await client.getJsonList(
+        '/slots',
+        queryParameters: <String, dynamic>{
+          'turfId': 'turf-1',
+          'date': '2026-08-08',
+        },
+      );
+      final List<Map<String, dynamic>> second = await client.getJsonList(
+        '/slots',
+        queryParameters: <String, dynamic>{
+          'turfId': 'turf-1',
+          'date': '2026-08-08',
+        },
+      );
+
+      expect(adapter.calls, 1);
+      expect(first, hasLength(1));
+      expect(second, hasLength(1));
+    });
+
+    test('keys the cache by query parameters (different date re-fetches)',
+        () async {
+      final _CountingJsonAdapter adapter = _CountingJsonAdapter();
+      final Dio dio = Dio()..httpClientAdapter = adapter;
+      final DioApiClient client = DioApiClient(
+        baseUrl: 'https://example.test',
+        dio: dio,
+      );
+
+      await client.getJsonList(
+        '/slots',
+        queryParameters: <String, dynamic>{'date': '2026-08-07'},
+      );
+      await client.getJsonList(
+        '/slots',
+        queryParameters: <String, dynamic>{'date': '2026-08-08'},
+      );
+
+      expect(adapter.calls, 2);
+    });
+
+    test('caches getJson object responses too', () async {
+      final _CountingJsonAdapter adapter = _CountingJsonAdapter(
+        body: (RequestOptions options) => <String, dynamic>{'id': 't1'},
+      );
+      final Dio dio = Dio()..httpClientAdapter = adapter;
+      final DioApiClient client = DioApiClient(
+        baseUrl: 'https://example.test',
+        dio: dio,
+      );
+
+      await client.getJson('/turfs/turf-1');
+      await client.getJson('/turfs/turf-1');
+
+      expect(adapter.calls, 1);
+    });
+
+    test('re-fetches once the entry expires (TTL elapses)', () async {
+      final _CountingJsonAdapter adapter = _CountingJsonAdapter();
+      final Dio dio = Dio()..httpClientAdapter = adapter;
+      final DioApiClient client = DioApiClient(
+        baseUrl: 'https://example.test',
+        dio: dio,
+        // Zero TTL: every entry is already expired at the moment it is read.
+        getCacheTtl: Duration.zero,
+      );
+
+      await client.getJsonList('/slots');
+      await client.getJsonList('/slots');
+
+      expect(adapter.calls, 2);
+    });
+
+    test('does not cache failures (a later success still fetches)', () async {
+      int calls = 0;
+      final Dio dio = Dio()
+        ..httpClientAdapter = _RecordingJsonAdapter(
+          (RequestOptions options) async {
+            calls++;
+            if (calls == 1) {
+              throw DioException(
+                requestOptions: options,
+                type: DioExceptionType.badResponse,
+                response: Response<dynamic>(
+                  requestOptions: options,
+                  statusCode: 503,
+                ),
+              );
+            }
+            return _jsonResponse(<dynamic>[<String, dynamic>{'id': 's1'}]);
+          },
+        );
+      final DioApiClient client = DioApiClient(
+        baseUrl: 'https://example.test',
+        dio: dio,
+      );
+
+      await expectLater(
+        () => client.getJsonList('/slots'),
+        throwsA(isA<DioException>()),
+      );
+      final List<Map<String, dynamic>> retried = await client.getJsonList(
+        '/slots',
+      );
+
+      expect(calls, 2);
+      expect(retried, hasLength(1));
+    });
+
+    test('a successful postJson flushes the cache (booking is visible now)',
+        () async {
+      final _CountingJsonAdapter adapter = _CountingJsonAdapter(
+        body: (RequestOptions options) => options.method == 'POST'
+            ? <String, dynamic>{'ok': true}
+            : <dynamic>[<String, dynamic>{'id': 's1'}],
+      );
+      final Dio dio = Dio()..httpClientAdapter = adapter;
+      final DioApiClient client = DioApiClient(
+        baseUrl: 'https://example.test',
+        dio: dio,
+      );
+
+      // Pre-booking slots GET is cached.
+      await client.getJsonList(
+        '/slots',
+        queryParameters: <String, dynamic>{'date': '2026-08-08'},
+      );
+      // Booking mutates server state...
+      await client.postJson(
+        '/slots/s1/book',
+        body: <String, dynamic>{'customerPhone': '9876543210'},
+      );
+      // ...so the next slots GET must hit the network again (3 calls total:
+      // pre-booking GET, the POST itself, and the post-booking GET).
+      await client.getJsonList(
+        '/slots',
+        queryParameters: <String, dynamic>{'date': '2026-08-08'},
+      );
+
+      expect(adapter.calls, 3);
+    });
+
+    test('setBearerToken flushes the cache (account boundary)', () async {
+      final _CountingJsonAdapter adapter = _CountingJsonAdapter();
+      final Dio dio = Dio()..httpClientAdapter = adapter;
+      final DioApiClient client = DioApiClient(
+        baseUrl: 'https://example.test',
+        dio: dio,
+      );
+
+      await client.getJsonList('/slots');
+      client.setBearerToken('new-token');
+      await client.getJsonList('/slots');
+
+      expect(adapter.calls, 2);
+    });
+  });
+
   group('DioApiClient.mapDioException', () {
     final DioApiClient client = DioApiClient(baseUrl: 'https://example.test');
 
@@ -268,6 +435,33 @@ class _RecordingJsonAdapter implements HttpClientAdapter {
     Future<void>? cancelFuture,
   ) {
     return respond(options);
+  }
+
+  @override
+  void close({bool force = false}) {}
+}
+
+/// Adapter that returns a fresh 200 JSON response per call (a list by
+/// default, or whatever [body] builds) and counts calls, so tests can assert
+/// the cache prevented a second network hit.
+class _CountingJsonAdapter implements HttpClientAdapter {
+  _CountingJsonAdapter({this.body});
+
+  /// Builds the response payload per request; defaults to a one-item list.
+  final Object? Function(RequestOptions options)? body;
+
+  int calls = 0;
+
+  @override
+  Future<ResponseBody> fetch(
+    RequestOptions options,
+    Stream<Uint8List>? requestStream,
+    Future<void>? cancelFuture,
+  ) async {
+    calls++;
+    final Object payload =
+        body?.call(options) ?? <dynamic>[<String, dynamic>{'id': 's1'}];
+    return _jsonResponse(payload);
   }
 
   @override
