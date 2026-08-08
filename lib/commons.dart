@@ -4,6 +4,7 @@ library;
 export 'src/auth/google_sign_in_service.dart';
 export 'src/auth/google_sign_in_service_impl.dart';
 export 'src/auth/login_screen.dart';
+export 'src/network/app_exception.dart';
 export 'src/network/dio_api_client.dart';
 export 'src/theme/component_themes.dart';
 export 'src/theme/typography.dart';

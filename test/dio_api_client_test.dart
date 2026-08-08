@@ -122,11 +122,11 @@ void main() {
       },
     );
 
-    test('getJson rethrows DioException on non-2xx responses', () async {
+    test('getJson maps non-2xx responses to a typed AppException', () async {
       final Dio dio = Dio()
         ..httpClientAdapter = _RecordingJsonAdapter(
           (RequestOptions options) async => ResponseBody.fromString(
-            'Unauthorized',
+            jsonEncode(<String, dynamic>{'message': 'Unauthorized'}),
             401,
             headers: <String, List<String>>{
               Headers.contentTypeHeader: <String>[Headers.jsonContentType],
@@ -138,7 +138,125 @@ void main() {
         dio: dio,
       );
 
-      expect(() => client.getJson('/slots'), throwsA(isA<DioException>()));
+      await expectLater(
+        () => client.getJson('/slots'),
+        throwsA(
+          isA<AppClientException>().having(
+            (AppClientException e) => e.statusCode,
+            'statusCode',
+            401,
+          ),
+        ),
+      );
+    });
+
+    test('maps HTTP 500 to AppServerException', () async {
+      final Dio dio = Dio()
+        ..httpClientAdapter = _RecordingJsonAdapter(
+          (RequestOptions options) async => ResponseBody.fromString(
+            jsonEncode(<String, dynamic>{'message': 'Internal Server Error'}),
+            500,
+            headers: <String, List<String>>{
+              Headers.contentTypeHeader: <String>[Headers.jsonContentType],
+            },
+          ),
+        );
+      final DioApiClient client = DioApiClient(
+        baseUrl: 'https://example.test',
+        dio: dio,
+      );
+
+      await expectLater(
+        () => client.getJsonList('/slots'),
+        throwsA(isA<AppServerException>()),
+      );
+    });
+
+    test('prefers the server message on 4xx responses', () async {
+      final Dio dio = Dio()
+        ..httpClientAdapter = _RecordingJsonAdapter(
+          (RequestOptions options) async => ResponseBody.fromString(
+            jsonEncode(<String, dynamic>{
+              'message': 'Phone number already registered.',
+            }),
+            409,
+            headers: <String, List<String>>{
+              Headers.contentTypeHeader: <String>[Headers.jsonContentType],
+            },
+          ),
+        );
+      final DioApiClient client = DioApiClient(
+        baseUrl: 'https://example.test',
+        dio: dio,
+      );
+
+      await expectLater(
+        () => client.getJson('/auth/register'),
+        throwsA(
+          isA<AppClientException>().having(
+            (AppClientException e) => e.message,
+            'message',
+            'Phone number already registered.',
+          ),
+        ),
+      );
+    });
+
+    test('maps timeouts to AppTimeoutException', () async {
+      final Dio dio = Dio()
+        ..httpClientAdapter = _ThrowingDioAdapter(
+          DioException(
+            requestOptions: RequestOptions(path: '/slots'),
+            type: DioExceptionType.receiveTimeout,
+          ),
+        );
+      final DioApiClient client = DioApiClient(
+        baseUrl: 'https://example.test',
+        dio: dio,
+      );
+
+      await expectLater(
+        () => client.getJsonList('/slots'),
+        throwsA(isA<AppTimeoutException>()),
+      );
+    });
+
+    test('maps connection errors to AppOfflineException', () async {
+      final Dio dio = Dio()
+        ..httpClientAdapter = _ThrowingDioAdapter(
+          DioException(
+            requestOptions: RequestOptions(path: '/slots'),
+            type: DioExceptionType.connectionError,
+          ),
+        );
+      final DioApiClient client = DioApiClient(
+        baseUrl: 'https://example.test',
+        dio: dio,
+      );
+
+      await expectLater(
+        () => client.getJson('/slots'),
+        throwsA(isA<AppOfflineException>()),
+      );
+    });
+
+    test('maps unknown errors to AppUnexpectedException', () async {
+      final Dio dio = Dio()
+        ..httpClientAdapter = _ThrowingDioAdapter(
+          DioException(
+            requestOptions: RequestOptions(path: '/slots'),
+            type: DioExceptionType.unknown,
+          ),
+        );
+      final DioApiClient client = DioApiClient(
+        baseUrl: 'https://example.test',
+        dio: dio,
+      );
+
+      await expectLater(
+        () => client.getJsonList('/slots'),
+        throwsA(isA<AppUnexpectedException>()),
+      );
     });
   });
 }
@@ -191,6 +309,27 @@ class _StaticJsonAdapter implements HttpClientAdapter {
         Headers.contentTypeHeader: <String>[Headers.jsonContentType],
       },
     );
+  }
+
+  @override
+  void close({bool force = false}) {}
+}
+
+/// Adapter that always throws the given [DioException] (dio propagates
+/// exceptions thrown by the adapter unchanged, so this simulates timeouts,
+/// connection failures and unknown errors).
+class _ThrowingDioAdapter implements HttpClientAdapter {
+  _ThrowingDioAdapter(this.error);
+
+  final DioException error;
+
+  @override
+  Future<ResponseBody> fetch(
+    RequestOptions options,
+    Stream<Uint8List>? requestStream,
+    Future<void>? cancelFuture,
+  ) async {
+    throw error;
   }
 
   @override
