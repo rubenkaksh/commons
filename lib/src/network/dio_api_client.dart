@@ -30,15 +30,23 @@ class DioApiClient {
   /// Maps a [DioException] into a typed [AppException] with a user-facing
   /// message.
   ///
+  /// Services catch `DioException` at their own boundary and rethrow the
+  /// mapped value, e.g.:
+  ///
+  /// ```dart
+  /// try {
+  ///   return await _apiClient.getJsonList('/slots');
+  /// } on DioException catch (e) {
+  ///   throw _apiClient.mapDioException(e);
+  /// }
+  /// ```
+  ///
   /// - timeouts → [AppTimeoutException]
   /// - connection failures → [AppOfflineException]
   /// - HTTP 4xx → [AppClientException] (prefers the server's own `message`
   ///   field when the error body carries one)
   /// - HTTP 5xx → [AppServerException]
   /// - anything else → [AppUnexpectedException]
-  ///
-  /// Every method on this client already converts [DioException]s at the
-  /// boundary, so callers normally never see a raw dio error.
   AppException mapDioException(DioException e) {
     final DioExceptionType type = e.type;
     if (type == DioExceptionType.connectionTimeout ||
@@ -83,31 +91,22 @@ class DioApiClient {
   }
 
   Future<Map<String, dynamic>> getJson(String path) async {
-    final Response<dynamic> response;
-    try {
-      response = await _dio.get<dynamic>(path);
-    } on DioException catch (e) {
-      throw mapDioException(e);
-    }
+    final Response<dynamic> response = await _dio.get<dynamic>(path);
     return _expectObject(response.data);
   }
 
   /// GET a JSON array of objects, e.g. list endpoints.
+  ///
+  /// Network/HTTP failures propagate as raw [DioException]s (services map
+  /// them via [mapDioException]); shape failures throw [ApiClientException].
   Future<List<Map<String, dynamic>>> getJsonList(
     String path, {
     Map<String, dynamic>? queryParameters,
   }) async {
-    final Response<dynamic> response;
-    try {
-      response = await _dio.get<dynamic>(
-        path,
-        queryParameters: queryParameters,
-      );
-    } on DioException catch (e) {
-      // Re-thrown typed so callers can distinguish offline/timeout/server
-      // failures (a blanket catch here would hide the dio error type).
-      throw mapDioException(e);
-    }
+    final Response<dynamic> response = await _dio.get<dynamic>(
+      path,
+      queryParameters: queryParameters,
+    );
     final Object? data = response.data;
     if (data is List) {
       final List<Map<String, dynamic>> items = <Map<String, dynamic>>[];
@@ -128,15 +127,10 @@ class DioApiClient {
     String path, {
     Map<String, dynamic>? body,
   }) async {
-    final Response<dynamic> response;
-    try {
-      response = await _dio.post<dynamic>(
-        path,
-        data: body,
-      );
-    } on DioException catch (e) {
-      throw mapDioException(e);
-    }
+    final Response<dynamic> response = await _dio.post<dynamic>(
+      path,
+      data: body,
+    );
     return _expectObject(response.data);
   }
 
