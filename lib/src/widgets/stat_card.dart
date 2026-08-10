@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart' as m;
+import 'package:flutter/material.dart';
 
-class StatCard extends m.StatelessWidget {
+class StatCard extends StatelessWidget {
   const StatCard({
     super.key,
     required this.icon,
@@ -9,34 +9,34 @@ class StatCard extends m.StatelessWidget {
     this.valueColor,
   });
 
-  final m.Widget icon;
+  final Widget icon;
   final String label;
   final String value;
-  final m.Color? valueColor;
+  final Color? valueColor;
 
   @override
-  m.Widget build(m.BuildContext context) {
-    final m.ColorScheme colors = m.Theme.of(context).colorScheme;
-    return m.Card(
-      child: m.Padding(
-        padding: const m.EdgeInsets.all(16),
-        child: m.Column(
-          crossAxisAlignment: m.CrossAxisAlignment.start,
-          mainAxisSize: m.MainAxisSize.min,
-          children: <m.Widget>[
-            m.Row(
-              children: <m.Widget>[
-                m.IconTheme(data: m.IconThemeData(color: colors.primary), child: icon),
-                const m.SizedBox(width: 8),
-                m.Text(label, style: m.Theme.of(context).textTheme.labelMedium),
+  Widget build(BuildContext context) {
+    final ColorScheme colors = Theme.of(context).colorScheme;
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Row(
+              children: <Widget>[
+                IconTheme(data: IconThemeData(color: colors.primary), child: icon),
+                const SizedBox(width: 8),
+                Text(label, style: Theme.of(context).textTheme.labelMedium),
               ],
             ),
-            const m.SizedBox(height: 8),
-            m.Text(
+            const SizedBox(height: 8),
+            Text(
               value,
-              style: m.Theme.of(context).textTheme.headlineSmall?.copyWith(
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                 color: valueColor ?? colors.onSurface,
-                fontWeight: m.FontWeight.bold,
+                fontWeight: FontWeight.bold,
               ),
             ),
           ],

@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart' as m;
+import 'package:flutter/material.dart';
 
-class TextInput extends m.StatelessWidget {
+class TextInput extends StatelessWidget {
   const TextInput({
     super.key,
     required this.label,
@@ -22,21 +22,21 @@ class TextInput extends m.StatelessWidget {
   final String? error;
   final bool enabled;
   final bool obscure;
-  final m.ValueChanged<String>? onChanged;
-  final m.ValueChanged<String>? onFieldSubmitted;
-  final m.TextEditingController? controller;
-  final m.FormFieldValidator<String>? validator;
-  final m.TextInputType? keyboardType;
-  final m.TextInputAction? textInputAction;
+  final ValueChanged<String>? onChanged;
+  final ValueChanged<String>? onFieldSubmitted;
+  final TextEditingController? controller;
+  final FormFieldValidator<String>? validator;
+  final TextInputType? keyboardType;
+  final TextInputAction? textInputAction;
   final bool autofocus;
 
   @override
-  m.Widget build(m.BuildContext context) {
-    return m.TextFormField(
+  Widget build(BuildContext context) {
+    return TextFormField(
       enabled: enabled,
       obscureText: obscure,
       autofocus: autofocus,
-      decoration: m.InputDecoration(
+      decoration: InputDecoration(
         labelText: label,
         hintText: hint,
         errorText: error,
@@ -51,7 +51,7 @@ class TextInput extends m.StatelessWidget {
   }
 }
 
-class PasswordInput extends m.StatefulWidget {
+class PasswordInput extends StatefulWidget {
   const PasswordInput({
     super.key,
     required this.label,
@@ -69,34 +69,34 @@ class PasswordInput extends m.StatefulWidget {
   final String label;
   final String? hint;
   final String? error;
-  final m.ValueChanged<String>? onChanged;
-  final m.ValueChanged<String>? onFieldSubmitted;
-  final m.TextEditingController? controller;
-  final m.FormFieldValidator<String>? validator;
-  final m.TextInputType? keyboardType;
-  final m.TextInputAction? textInputAction;
+  final ValueChanged<String>? onChanged;
+  final ValueChanged<String>? onFieldSubmitted;
+  final TextEditingController? controller;
+  final FormFieldValidator<String>? validator;
+  final TextInputType? keyboardType;
+  final TextInputAction? textInputAction;
   final bool autofocus;
 
   @override
-  m.State<PasswordInput> createState() => _PasswordInputState();
+  State<PasswordInput> createState() => _PasswordInputState();
 }
 
-class _PasswordInputState extends m.State<PasswordInput> {
+class _PasswordInputState extends State<PasswordInput> {
   bool _obscured = true;
 
   @override
-  m.Widget build(m.BuildContext context) {
-    return m.TextFormField(
+  Widget build(BuildContext context) {
+    return TextFormField(
       obscureText: _obscured,
       autofocus: widget.autofocus,
-      decoration: m.InputDecoration(
+      decoration: InputDecoration(
         labelText: widget.label,
         hintText: widget.hint,
         errorText: widget.error,
-        suffixIcon: m.IconButton(
+        suffixIcon: IconButton(
           onPressed: () => setState(() => _obscured = !_obscured),
-          icon: m.Icon(
-            _obscured ? m.Icons.visibility_off : m.Icons.visibility,
+          icon: Icon(
+            _obscured ? Icons.visibility_off : Icons.visibility,
           ),
           tooltip: _obscured ? 'Show password' : 'Hide password',
         ),
@@ -111,7 +111,7 @@ class _PasswordInputState extends m.State<PasswordInput> {
   }
 }
 
-class SearchInput extends m.StatelessWidget {
+class SearchInput extends StatelessWidget {
   const SearchInput({
     super.key,
     this.hint,
@@ -120,18 +120,18 @@ class SearchInput extends m.StatelessWidget {
   });
 
   final String? hint;
-  final m.ValueChanged<String>? onChanged;
-  final m.TextEditingController? controller;
+  final ValueChanged<String>? onChanged;
+  final TextEditingController? controller;
 
   @override
-  m.Widget build(m.BuildContext context) {
-    return m.SearchBar(
+  Widget build(BuildContext context) {
+    return SearchBar(
       hintText: hint,
       onChanged: onChanged,
       controller: controller,
-      leading: const m.Padding(
-        padding: m.EdgeInsetsDirectional.only(start: 12),
-        child: m.Icon(m.Icons.search),
+      leading: const Padding(
+        padding: EdgeInsetsDirectional.only(start: 12),
+        child: Icon(Icons.search),
       ),
     );
   }

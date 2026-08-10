@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart' as m;
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:commons/commons.dart';
@@ -27,13 +27,13 @@ class _FakeStrings implements LoginStrings {
   @override
   String get demoPassword => 'password123';
   @override
-  m.FormFieldValidator<String> get emailValidator => (String? value) {
+  FormFieldValidator<String> get emailValidator => (String? value) {
     if (value == null || value.trim().isEmpty) return 'Email is required';
     if (!value.contains('@')) return 'Enter a valid email';
     return null;
   };
   @override
-  m.FormFieldValidator<String> get passwordValidator => (String? value) {
+  FormFieldValidator<String> get passwordValidator => (String? value) {
     if (value == null || value.length < 8) return 'Password too short';
     return null;
   };
@@ -41,12 +41,12 @@ class _FakeStrings implements LoginStrings {
 
 class _FakeAsyncData implements LoginAsyncData {
   @override
-  final m.ValueNotifier<bool> isLoading = m.ValueNotifier<bool>(false);
+  final ValueNotifier<bool> isLoading = ValueNotifier<bool>(false);
   @override
-  final m.ValueNotifier<String?> errorMessage =
-      m.ValueNotifier<String?>(null);
+  final ValueNotifier<String?> errorMessage =
+      ValueNotifier<String?>(null);
   @override
-  final m.ValueNotifier<bool> isAuthenticated = m.ValueNotifier<bool>(false);
+  final ValueNotifier<bool> isAuthenticated = ValueNotifier<bool>(false);
   bool disposed = false;
 
   @override
@@ -81,18 +81,18 @@ class _FakeCallbacks implements LoginServiceCallbacks {
   }
 
   @override
-  void navigateForward(m.BuildContext context) {
+  void navigateForward(BuildContext context) {
     navigateCalls++;
   }
 }
 
-m.Widget _wrap({
+Widget _wrap({
   required LoginStrings strings,
   required LoginAsyncData asyncData,
   required LoginServiceCallbacks callbacks,
   bool enableGoogleSignIn = false,
 }) {
-  return m.MaterialApp(
+  return MaterialApp(
     home: LoginScreen(
       displayTexts: strings,
       asyncData: asyncData,
@@ -103,10 +103,10 @@ m.Widget _wrap({
 }
 
 /// The submit button renders via `FilledButton.icon`, whose runtime type is a
-/// private subclass — `widgetWithText(m.FilledButton, ...)` therefore misses
+/// private subclass — `widgetWithText(FilledButton, ...)` therefore misses
 /// it. Match on the base type instead.
 final Finder _submitButton = find.byWidgetPredicate(
-  (m.Widget w) => w is m.FilledButton,
+  (Widget w) => w is FilledButton,
 );
 
 void main() {
@@ -166,7 +166,7 @@ void main() {
     asyncData.isLoading.value = true;
     await tester.pump();
 
-    final m.FilledButton button = tester.widget<m.FilledButton>(
+    final FilledButton button = tester.widget<FilledButton>(
       _submitButton,
     );
     expect(button.onPressed, isNull);
@@ -263,9 +263,9 @@ void main() {
       ),
     );
 
-    await tester.enterText(find.widgetWithText(m.TextFormField, 'Email'), 'x');
+    await tester.enterText(find.widgetWithText(TextFormField, 'Email'), 'x');
     await tester.enterText(
-      find.widgetWithText(m.TextFormField, 'Password'),
+      find.widgetWithText(TextFormField, 'Password'),
       'short',
     );
     await tester.tap(_submitButton);

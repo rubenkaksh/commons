@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart' as m;
+import 'package:flutter/material.dart';
 
-class PrimaryButton extends m.StatelessWidget {
+class PrimaryButton extends StatelessWidget {
   const PrimaryButton({
     super.key,
     required this.text,
@@ -8,18 +8,18 @@ class PrimaryButton extends m.StatelessWidget {
   });
 
   final String text;
-  final m.VoidCallback? onPressed;
+  final VoidCallback? onPressed;
 
   @override
-  m.Widget build(m.BuildContext context) {
-    return m.ElevatedButton(
+  Widget build(BuildContext context) {
+    return ElevatedButton(
       onPressed: onPressed,
-      child: m.Text(text),
+      child: Text(text),
     );
   }
 }
 
-class AppFilledButton extends m.StatelessWidget {
+class AppFilledButton extends StatelessWidget {
   const AppFilledButton({
     super.key,
     required this.text,
@@ -29,32 +29,32 @@ class AppFilledButton extends m.StatelessWidget {
   });
 
   final String text;
-  final m.Widget? icon;
+  final Widget? icon;
   final bool isLoading;
-  final m.VoidCallback? onPressed;
+  final VoidCallback? onPressed;
 
   @override
-  m.Widget build(m.BuildContext context) {
+  Widget build(BuildContext context) {
     if (isLoading || icon != null) {
-      return m.FilledButton.icon(
+      return FilledButton.icon(
         onPressed: isLoading ? null : onPressed,
         icon: isLoading
-            ? const m.SizedBox.square(
+            ? const SizedBox.square(
                 dimension: 18,
-                child: m.CircularProgressIndicator(strokeWidth: 2),
+                child: CircularProgressIndicator(strokeWidth: 2),
               )
-            : icon ?? const m.SizedBox.shrink(),
-        label: m.Text(text),
+            : icon ?? const SizedBox.shrink(),
+        label: Text(text),
       );
     }
-    return m.FilledButton(
+    return FilledButton(
       onPressed: onPressed,
-      child: m.Text(text),
+      child: Text(text),
     );
   }
 }
 
-class AppOutlinedButton extends m.StatelessWidget {
+class AppOutlinedButton extends StatelessWidget {
   const AppOutlinedButton({
     super.key,
     required this.text,
@@ -63,26 +63,26 @@ class AppOutlinedButton extends m.StatelessWidget {
   });
 
   final String text;
-  final m.Widget? icon;
-  final m.VoidCallback? onPressed;
+  final Widget? icon;
+  final VoidCallback? onPressed;
 
   @override
-  m.Widget build(m.BuildContext context) {
-    if (icon case final m.Widget iconWidget) {
-      return m.OutlinedButton.icon(
+  Widget build(BuildContext context) {
+    if (icon case final Widget iconWidget) {
+      return OutlinedButton.icon(
         onPressed: onPressed,
         icon: iconWidget,
-        label: m.Text(text),
+        label: Text(text),
       );
     }
-    return m.OutlinedButton(
+    return OutlinedButton(
       onPressed: onPressed,
-      child: m.Text(text),
+      child: Text(text),
     );
   }
 }
 
-class GhostButton extends m.StatelessWidget {
+class GhostButton extends StatelessWidget {
   const GhostButton({
     super.key,
     required this.text,
@@ -90,18 +90,18 @@ class GhostButton extends m.StatelessWidget {
   });
 
   final String text;
-  final m.VoidCallback? onPressed;
+  final VoidCallback? onPressed;
 
   @override
-  m.Widget build(m.BuildContext context) {
-    return m.TextButton(
+  Widget build(BuildContext context) {
+    return TextButton(
       onPressed: onPressed,
-      child: m.Text(text),
+      child: Text(text),
     );
   }
 }
 
-class AppIconButton extends m.StatelessWidget {
+class AppIconButton extends StatelessWidget {
   const AppIconButton({
     super.key,
     required this.icon,
@@ -109,13 +109,13 @@ class AppIconButton extends m.StatelessWidget {
     this.tooltip,
   });
 
-  final m.Widget icon;
-  final m.VoidCallback? onPressed;
+  final Widget icon;
+  final VoidCallback? onPressed;
   final String? tooltip;
 
   @override
-  m.Widget build(m.BuildContext context) {
-    return m.IconButton(
+  Widget build(BuildContext context) {
+    return IconButton(
       onPressed: onPressed,
       icon: icon,
       tooltip: tooltip,

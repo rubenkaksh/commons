@@ -1,16 +1,16 @@
-import 'package:flutter/material.dart' as m;
+import 'package:flutter/material.dart';
 
 /// A generic bottom sheet with title, scrollable body, and confirm/cancel CTAs.
 ///
 /// Use [showFormBottomSheet] to display this as a modal bottom sheet.
 ///
 /// Keyboard handling is built in generically: the sheet insets its bottom by
-/// the current keyboard height (via [m.MediaQuery.viewInsetsOf]) so focused
+/// the current keyboard height (via [MediaQuery.viewInsetsOf]) so focused
 /// inputs and the CTAs stay visible, and [showFormBottomSheet] autofocuses
 /// the first focusable widget (the primary input) on open. Every form sheet
 /// built on these two gets both behaviors for free — no per-sheet keyboard
 /// code.
-class FormBottomSheet extends m.StatelessWidget {
+class FormBottomSheet extends StatelessWidget {
   const FormBottomSheet({
     super.key,
     required this.title,
@@ -25,50 +25,50 @@ class FormBottomSheet extends m.StatelessWidget {
 
   final String title;
   final String? subtitle;
-  final m.Widget body;
+  final Widget body;
   final String confirmLabel;
-  final m.VoidCallback? onConfirm;
+  final VoidCallback? onConfirm;
   final String cancelLabel;
-  final m.VoidCallback? onCancel;
+  final VoidCallback? onCancel;
   final bool confirmEnabled;
 
   @override
-  m.Widget build(m.BuildContext context) {
-    final m.ColorScheme colors = m.Theme.of(context).colorScheme;
+  Widget build(BuildContext context) {
+    final ColorScheme colors = Theme.of(context).colorScheme;
     // The sheet must wrap its content (min height), so there is no Scaffold —
     // a Scaffold always expands to fill its constraints and would turn the
     // sheet full-screen. Keyboard handling instead lives in this root
     // AnimatedPadding: the sheet lifts by the keyboard height as a whole
     // (resize-to-avoid-bottom-inset semantics). It sits OUTSIDE the content
     // so the sheet re-sizes above the keyboard instead of shrinking its child.
-    return m.AnimatedPadding(
+    return AnimatedPadding(
       duration: const Duration(milliseconds: 150),
-      curve: m.Curves.easeOut,
-      padding: m.EdgeInsets.only(bottom: m.MediaQuery.viewInsetsOf(context).bottom),
-      child: m.Container(
-        decoration: m.BoxDecoration(
+      curve: Curves.easeOut,
+      padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
+      child: Container(
+        decoration: BoxDecoration(
           color: colors.surface,
-          borderRadius: const m.BorderRadius.vertical(top: m.Radius.circular(20)),
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
         ),
-        child: m.SingleChildScrollView(
-          child: m.Column(
-            mainAxisSize: m.MainAxisSize.min,
-            children: <m.Widget>[
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
               // Header
-              m.Padding(
-                padding: const m.EdgeInsets.fromLTRB(24, 20, 24, 0),
-                child: m.Column(
-                  crossAxisAlignment: m.CrossAxisAlignment.start,
-                  children: <m.Widget>[
-                    m.Text(
+              Padding(
+                padding: const EdgeInsets.fromLTRB(24, 20, 24, 0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
                       title,
-                      style: m.Theme.of(context).textTheme.headlineSmall,
+                      style: Theme.of(context).textTheme.headlineSmall,
                     ),
                     if (subtitle case final subtitle?) ...[
-                      const m.SizedBox(height: 4),
-                      m.Text(
+                      const SizedBox(height: 4),
+                      Text(
                         subtitle,
-                        style: m.Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           color: colors.onSurfaceVariant,
                         ),
                       ),
@@ -77,26 +77,26 @@ class FormBottomSheet extends m.StatelessWidget {
                 ),
               ),
               // Scrollable body
-              m.Padding(
-                padding: const m.EdgeInsets.fromLTRB(24, 16, 24, 24),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
                 child: body,
               ),
               // CTAs
-              m.Padding(
-                padding: const m.EdgeInsets.fromLTRB(24, 16, 24, 24),
-                child: m.Row(
-                  children: <m.Widget>[
-                    m.Expanded(
-                      child: m.OutlinedButton(
-                        onPressed: onCancel ?? () => m.Navigator.pop(context),
-                        child: m.Text(cancelLabel),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: OutlinedButton(
+                        onPressed: onCancel ?? () => Navigator.pop(context),
+                        child: Text(cancelLabel),
                       ),
                     ),
-                    const m.SizedBox(width: 12),
-                    m.Expanded(
-                      child: m.FilledButton(
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: FilledButton(
                         onPressed: confirmEnabled ? onConfirm : null,
-                        child: m.Text(confirmLabel),
+                        child: Text(confirmLabel),
                       ),
                     ),
                   ],
@@ -115,15 +115,15 @@ class FormBottomSheet extends m.StatelessWidget {
 /// Returns a [Future] that completes with the value passed to
 /// [Navigator.pop] when the sheet is dismissed.
 Future<T?> showFormBottomSheet<T>({
-  required m.BuildContext context,
-  required m.WidgetBuilder builder,
+  required BuildContext context,
+  required WidgetBuilder builder,
   bool isScrollControlled = true,
 }) {
-  return m.showModalBottomSheet<T>(
+  return showModalBottomSheet<T>(
     context: context,
     isScrollControlled: isScrollControlled,
     useSafeArea: true,
-    builder: (m.BuildContext sheetContext) {
+    builder: (BuildContext sheetContext) {
       // Generic focus-on-open: focuses the first focusable widget in the
       // sheet (i.e. the primary input) after the first frame, so the keyboard
       // is up as soon as the sheet appears — without per-sheet code. A sheet
@@ -133,19 +133,19 @@ Future<T?> showFormBottomSheet<T>({
   );
 }
 
-/// Wraps the sheet content in a [m.FocusScope] that focuses the first
+/// Wraps the sheet content in a [FocusScope] that focuses the first
 /// focusable widget on open.
-class _PrimaryFocusScope extends m.StatefulWidget {
+class _PrimaryFocusScope extends StatefulWidget {
   const _PrimaryFocusScope({required this.child});
 
-  final m.Widget child;
+  final Widget child;
 
   @override
-  m.State<_PrimaryFocusScope> createState() => _PrimaryFocusScopeState();
+  State<_PrimaryFocusScope> createState() => _PrimaryFocusScopeState();
 }
 
-class _PrimaryFocusScopeState extends m.State<_PrimaryFocusScope> {
-  final m.FocusScopeNode _scopeNode = m.FocusScopeNode();
+class _PrimaryFocusScopeState extends State<_PrimaryFocusScope> {
+  final FocusScopeNode _scopeNode = FocusScopeNode();
 
   @override
   void initState() {
@@ -153,9 +153,9 @@ class _PrimaryFocusScopeState extends m.State<_PrimaryFocusScope> {
     // Note: `FocusScope(autofocus: true)` alone is NOT enough — it focuses the
     // scope node but does not descend into the first focusable child, so the
     // keyboard would stay down. Traverse explicitly instead.
-    m.WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      final Iterable<m.FocusNode> focusables = _scopeNode.traversalDescendants;
+      final Iterable<FocusNode> focusables = _scopeNode.traversalDescendants;
       if (focusables.isEmpty) {
         return;
       }
@@ -170,7 +170,7 @@ class _PrimaryFocusScopeState extends m.State<_PrimaryFocusScope> {
   }
 
   @override
-  m.Widget build(m.BuildContext context) {
-    return m.FocusScope(node: _scopeNode, child: widget.child);
+  Widget build(BuildContext context) {
+    return FocusScope(node: _scopeNode, child: widget.child);
   }
 }

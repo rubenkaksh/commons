@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart' as m;
+import 'package:flutter/material.dart';
 
-class SectionHeader extends m.StatelessWidget {
+class SectionHeader extends StatelessWidget {
   const SectionHeader({
     super.key,
     required this.title,
@@ -9,28 +9,28 @@ class SectionHeader extends m.StatelessWidget {
   });
 
   final String title;
-  final m.Widget? leadingIcon;
-  final m.VoidCallback? onTap;
+  final Widget? leadingIcon;
+  final VoidCallback? onTap;
 
   @override
-  m.Widget build(m.BuildContext context) {
-    final m.ColorScheme colors = m.Theme.of(context).colorScheme;
-    return m.Row(
-      children: <m.Widget>[
-        if (leadingIcon case final m.Widget icon) ...[
+  Widget build(BuildContext context) {
+    final ColorScheme colors = Theme.of(context).colorScheme;
+    return Row(
+      children: <Widget>[
+        if (leadingIcon case final Widget icon) ...[
           icon,
-          const m.SizedBox(width: 8),
+          const SizedBox(width: 8),
         ],
-        m.Text(
+        Text(
           title,
-          style: m.Theme.of(
+          style: Theme.of(
             context,
-          ).textTheme.titleMedium?.copyWith(fontWeight: m.FontWeight.w600),
+          ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
         ),
-        const m.Spacer(),
+        const Spacer(),
         if (onTap != null)
-          m.IconButton(
-            icon: m.Icon(m.Icons.chevron_right, color: colors.onSurfaceVariant),
+          IconButton(
+            icon: Icon(Icons.chevron_right, color: colors.onSurfaceVariant),
             onPressed: onTap,
           ),
       ],

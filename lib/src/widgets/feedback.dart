@@ -1,20 +1,20 @@
-import 'package:flutter/material.dart' as m;
+import 'package:flutter/material.dart';
 
-class LoadingView extends m.StatelessWidget {
+class LoadingView extends StatelessWidget {
   const LoadingView({super.key, this.message});
 
   final String? message;
 
   @override
-  m.Widget build(m.BuildContext context) {
-    return m.Center(
-      child: m.Column(
-        mainAxisSize: m.MainAxisSize.min,
-        children: <m.Widget>[
-          const m.CircularProgressIndicator(),
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          const CircularProgressIndicator(),
           if (message case final String text) ...[
-            const m.SizedBox(height: 16),
-            m.Text(text),
+            const SizedBox(height: 16),
+            Text(text),
           ],
         ],
       ),
@@ -22,24 +22,24 @@ class LoadingView extends m.StatelessWidget {
   }
 }
 
-class ErrorView extends m.StatelessWidget {
+class ErrorView extends StatelessWidget {
   const ErrorView({super.key, required this.message, this.onRetry});
 
   final String message;
-  final m.VoidCallback? onRetry;
+  final VoidCallback? onRetry;
 
   @override
-  m.Widget build(m.BuildContext context) {
-    return m.Center(
-      child: m.Column(
-        mainAxisSize: m.MainAxisSize.min,
-        children: <m.Widget>[
-          const m.Icon(m.Icons.error_outline, size: 48),
-          const m.SizedBox(height: 16),
-          m.Text(message, textAlign: m.TextAlign.center),
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          const Icon(Icons.error_outline, size: 48),
+          const SizedBox(height: 16),
+          Text(message, textAlign: TextAlign.center),
           if (onRetry != null) ...[
-            const m.SizedBox(height: 16),
-            m.ElevatedButton(onPressed: onRetry, child: const m.Text('Retry')),
+            const SizedBox(height: 16),
+            ElevatedButton(onPressed: onRetry, child: const Text('Retry')),
           ],
         ],
       ),
@@ -47,7 +47,7 @@ class ErrorView extends m.StatelessWidget {
   }
 }
 
-class EmptyView extends m.StatelessWidget {
+class EmptyView extends StatelessWidget {
   const EmptyView({
     super.key,
     this.icon,
@@ -56,25 +56,25 @@ class EmptyView extends m.StatelessWidget {
     this.onAction,
   });
 
-  final m.IconData? icon;
+  final IconData? icon;
   final String? message;
   final String? actionLabel;
-  final m.VoidCallback? onAction;
+  final VoidCallback? onAction;
 
   @override
-  m.Widget build(m.BuildContext context) {
-    return m.Center(
-      child: m.Column(
-        mainAxisSize: m.MainAxisSize.min,
-        children: <m.Widget>[
-          m.Icon(icon ?? m.Icons.inbox_outlined, size: 48),
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          Icon(icon ?? Icons.inbox_outlined, size: 48),
           if (message case final String text) ...[
-            const m.SizedBox(height: 16),
-            m.Text(text, textAlign: m.TextAlign.center),
+            const SizedBox(height: 16),
+            Text(text, textAlign: TextAlign.center),
           ],
           if (actionLabel case final String label when onAction != null) ...[
-            const m.SizedBox(height: 16),
-            m.ElevatedButton(onPressed: onAction, child: m.Text(label)),
+            const SizedBox(height: 16),
+            ElevatedButton(onPressed: onAction, child: Text(label)),
           ],
         ],
       ),
@@ -84,7 +84,7 @@ class EmptyView extends m.StatelessWidget {
 
 enum LoadState { loading, error, empty, data }
 
-class StateSwitcher extends m.StatelessWidget {
+class StateSwitcher extends StatelessWidget {
   const StateSwitcher({
     super.key,
     required this.state,
@@ -96,19 +96,19 @@ class StateSwitcher extends m.StatelessWidget {
   });
 
   final LoadState state;
-  final m.VoidCallback? onRetry;
-  final m.Widget? loading;
-  final m.Widget Function()? error;
-  final m.Widget? empty;
-  final m.Widget data;
+  final VoidCallback? onRetry;
+  final Widget? loading;
+  final Widget Function()? error;
+  final Widget? empty;
+  final Widget data;
 
   @override
-  m.Widget build(m.BuildContext context) {
+  Widget build(BuildContext context) {
     switch (state) {
       case LoadState.loading:
         return loading ?? const LoadingView();
       case LoadState.error:
-        final m.Widget Function()? errorBuilder = error;
+        final Widget Function()? errorBuilder = error;
         return errorBuilder == null
             ? ErrorView(message: 'Something went wrong.', onRetry: onRetry)
             : errorBuilder();

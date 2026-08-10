@@ -21,23 +21,23 @@ abstract class LoginStrings {
   String get registerLabel => 'Create an account';
 
   /// Returns an error message for an invalid email, or `null` when valid.
-  m.FormFieldValidator<String> get emailValidator;
+  FormFieldValidator<String> get emailValidator;
 
   /// Returns an error message for an invalid password, or `null` when valid.
-  m.FormFieldValidator<String> get passwordValidator;
+  FormFieldValidator<String> get passwordValidator;
 }
 
 /// Reactive data the screen renders: loading, error and authenticated state.
 ///
 /// Implementations bridge the app's state management (e.g. a bloc stream) into
-/// these plain [m.ValueNotifier]s so the package stays framework-free.
+/// these plain [ValueNotifier]s so the package stays framework-free.
 abstract class LoginAsyncData {
-  m.ValueNotifier<bool> get isLoading;
-  m.ValueNotifier<String?> get errorMessage;
+  ValueNotifier<bool> get isLoading;
+  ValueNotifier<String?> get errorMessage;
 
   /// Fires `true` once per successful authentication; the screen consumes the
   /// signal (resets it to `false`) and calls [LoginServiceCallbacks.navigateForward].
-  m.ValueNotifier<bool> get isAuthenticated;
+  ValueNotifier<bool> get isAuthenticated;
 
   void dispose();
 }
@@ -55,5 +55,5 @@ abstract class LoginServiceCallbacks {
 
   /// Called once when the user becomes authenticated (see [LoginAsyncData.isAuthenticated]).
   /// The app owns navigation here (e.g. `context.goNamed(home)`).
-  void navigateForward(m.BuildContext context);
+  void navigateForward(BuildContext context);
 }
