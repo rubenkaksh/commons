@@ -19,8 +19,8 @@ class PrimaryButton extends m.StatelessWidget {
   }
 }
 
-class FilledButton extends m.StatelessWidget {
-  const FilledButton({
+class AppFilledButton extends m.StatelessWidget {
+  const AppFilledButton({
     super.key,
     required this.text,
     this.icon,
@@ -54,8 +54,8 @@ class FilledButton extends m.StatelessWidget {
   }
 }
 
-class OutlineButton extends m.StatelessWidget {
-  const OutlineButton({
+class AppOutlinedButton extends m.StatelessWidget {
+  const AppOutlinedButton({
     super.key,
     required this.text,
     this.icon,
@@ -101,8 +101,8 @@ class GhostButton extends m.StatelessWidget {
   }
 }
 
-class IconButton extends m.StatelessWidget {
-  const IconButton({
+class AppIconButton extends m.StatelessWidget {
+  const AppIconButton({
     super.key,
     required this.icon,
     this.onPressed,

@@ -144,7 +144,7 @@ class _LoginScreenState extends m.State<LoginScreen> {
             builder: (m.BuildContext c, bool loading, m.Widget? _) {
               return m.Column(
                 children: <m.Widget>[
-                  FilledButton(
+                  AppFilledButton(
                     text: widget.displayTexts.submitLabel,
                     icon: loading ? null : const m.Icon(m.Icons.login),
                     isLoading: loading,
@@ -152,7 +152,7 @@ class _LoginScreenState extends m.State<LoginScreen> {
                   ),
                   if (widget.enableGoogleSignIn) ...<m.Widget>[
                     const m.SizedBox(height: 12),
-                    FilledButton(
+                    AppFilledButton(
                       text: widget.displayTexts.googleSignInLabel,
                       icon: const m.Icon(m.Icons.g_mobiledata),
                       isLoading: loading,
@@ -164,7 +164,7 @@ class _LoginScreenState extends m.State<LoginScreen> {
             },
           ),
           const m.SizedBox(height: 12),
-          OutlineButton(
+          AppOutlinedButton(
             text: widget.displayTexts.fillDemoLabel,
             icon: const m.Icon(m.Icons.key_outlined),
             onPressed: _fillDemoCredentials,

@@ -22,8 +22,8 @@ class Headline extends m.StatelessWidget {
 
 enum TitleSize { large, medium, small }
 
-class Title extends m.StatelessWidget {
-  const Title(this.text, {super.key, this.size = TitleSize.medium});
+class AppTitle extends m.StatelessWidget {
+  const AppTitle(this.text, {super.key, this.size = TitleSize.medium});
 
   final String text;
   final TitleSize size;
