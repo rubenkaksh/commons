@@ -201,5 +201,41 @@ void main() {
           keyboardHeight,
           reason: 'sheet must ride above the keyboard');
     });
+
+    testWidgets('sizes to its content, not the full screen', (tester) async {
+      await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+          body: Builder(
+            builder: (context) => Center(
+              child: ElevatedButton(
+                onPressed: () => showFormBottomSheet<void>(
+                  context: context,
+                  builder: (_) => FormBottomSheet(
+                    title: 'Book',
+                    body: const SizedBox(height: 200),
+                    confirmLabel: 'Confirm',
+                    onConfirm: () {},
+                  ),
+                ),
+                child: const Text('Open'),
+              ),
+            ),
+          ),
+        ),
+      ));
+
+      await tester.tap(find.text('Open'));
+      await tester.pumpAndSettle();
+
+      final double sheetHeight = tester.getSize(
+        find.byType(FormBottomSheet),
+      ).height;
+      final double screenHeight =
+          tester.view.physicalSize.height / tester.view.devicePixelRatio;
+      expect(sheetHeight, lessThan(screenHeight),
+          reason: 'sheet must wrap its content, not expand to full screen');
+      expect(sheetHeight, greaterThan(200),
+          reason: 'sheet must fit the 200px body plus header and CTAs');
+    });
   });
 }

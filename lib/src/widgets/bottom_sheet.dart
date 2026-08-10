@@ -35,96 +35,77 @@ class FormBottomSheet extends m.StatelessWidget {
   @override
   m.Widget build(m.BuildContext context) {
     final m.ColorScheme colors = m.Theme.of(context).colorScheme;
-    return m.DraggableScrollableSheet(
-      initialChildSize: 0.5,
-      minChildSize: 0.3,
-      maxChildSize: 0.9,
-      expand: false,
-      builder: (m.BuildContext context, m.ScrollController scrollController) {
-        // Generic keyboard fix: inset the sheet bottom by the keyboard height
-        // so the focused input and the CTAs are never covered. Animated so the
-        // sheet rides up smoothly with the keyboard's own animation.
-        final double keyboardInset = m.MediaQuery.viewInsetsOf(
-          context,
-        ).bottom;
-        return m.AnimatedPadding(
-          duration: const Duration(milliseconds: 150),
-          curve: m.Curves.easeOut,
-          padding: m.EdgeInsets.only(bottom: keyboardInset),
-          child: m.Container(
-            decoration: m.BoxDecoration(
-              color: colors.surface,
-              borderRadius: const m.BorderRadius.vertical(
-                top: m.Radius.circular(20),
-              ),
-            ),
-            child: m.Column(
-              children: <m.Widget>[
-                // Drag handle
-                m.Container(
-                  margin: const m.EdgeInsets.only(top: 12),
-                  width: 40,
-                  height: 4,
-                  decoration: m.BoxDecoration(
-                    color: colors.onSurfaceVariant.withValues(alpha: 0.4),
-                    borderRadius: m.BorderRadius.circular(2),
-                  ),
-                ),
-                // Header
-                m.Padding(
-                  padding: const m.EdgeInsets.fromLTRB(24, 20, 24, 0),
-                  child: m.Column(
-                    crossAxisAlignment: m.CrossAxisAlignment.start,
-                    children: <m.Widget>[
+    // The sheet must wrap its content (min height), so there is no Scaffold —
+    // a Scaffold always expands to fill its constraints and would turn the
+    // sheet full-screen. Keyboard handling instead lives in this root
+    // AnimatedPadding: the sheet lifts by the keyboard height as a whole
+    // (resize-to-avoid-bottom-inset semantics). It sits OUTSIDE the content
+    // so the sheet re-sizes above the keyboard instead of shrinking its child.
+    return m.AnimatedPadding(
+      duration: const Duration(milliseconds: 150),
+      curve: m.Curves.easeOut,
+      padding: m.EdgeInsets.only(bottom: m.MediaQuery.viewInsetsOf(context).bottom),
+      child: m.Container(
+        decoration: m.BoxDecoration(
+          color: colors.surface,
+          borderRadius: const m.BorderRadius.vertical(top: m.Radius.circular(20)),
+        ),
+        child: m.SingleChildScrollView(
+          child: m.Column(
+            mainAxisSize: m.MainAxisSize.min,
+            children: <m.Widget>[
+              // Header
+              m.Padding(
+                padding: const m.EdgeInsets.fromLTRB(24, 20, 24, 0),
+                child: m.Column(
+                  crossAxisAlignment: m.CrossAxisAlignment.start,
+                  children: <m.Widget>[
+                    m.Text(
+                      title,
+                      style: m.Theme.of(context).textTheme.headlineSmall,
+                    ),
+                    if (subtitle case final subtitle?) ...[
+                      const m.SizedBox(height: 4),
                       m.Text(
-                        title,
-                        style: m.Theme.of(context).textTheme.headlineSmall,
-                      ),
-                      if (subtitle case final subtitle?) ...[
-                        const m.SizedBox(height: 4),
-                        m.Text(
-                          subtitle,
-                          style: m.Theme.of(context).textTheme.bodyMedium
-                              ?.copyWith(color: colors.onSurfaceVariant),
-                        ),
-                      ],
-                    ],
-                  ),
-                ),
-                // Scrollable body
-                m.Expanded(
-                  child: m.SingleChildScrollView(
-                    controller: scrollController,
-                    padding: const m.EdgeInsets.fromLTRB(24, 16, 24, 0),
-                    child: body,
-                  ),
-                ),
-                // CTAs
-                m.Padding(
-                  padding: const m.EdgeInsets.fromLTRB(24, 16, 24, 24),
-                  child: m.Row(
-                    children: <m.Widget>[
-                      m.Expanded(
-                        child: m.OutlinedButton(
-                          onPressed: onCancel ?? () => m.Navigator.pop(context),
-                          child: m.Text(cancelLabel),
-                        ),
-                      ),
-                      const m.SizedBox(width: 12),
-                      m.Expanded(
-                        child: m.FilledButton(
-                          onPressed: confirmEnabled ? onConfirm : null,
-                          child: m.Text(confirmLabel),
+                        subtitle,
+                        style: m.Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: colors.onSurfaceVariant,
                         ),
                       ),
                     ],
-                  ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+              // Scrollable body
+              m.Padding(
+                padding: const m.EdgeInsets.fromLTRB(24, 16, 24, 24),
+                child: body,
+              ),
+              // CTAs
+              m.Padding(
+                padding: const m.EdgeInsets.fromLTRB(24, 16, 24, 24),
+                child: m.Row(
+                  children: <m.Widget>[
+                    m.Expanded(
+                      child: m.OutlinedButton(
+                        onPressed: onCancel ?? () => m.Navigator.pop(context),
+                        child: m.Text(cancelLabel),
+                      ),
+                    ),
+                    const m.SizedBox(width: 12),
+                    m.Expanded(
+                      child: m.FilledButton(
+                        onPressed: confirmEnabled ? onConfirm : null,
+                        child: m.Text(confirmLabel),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 }
