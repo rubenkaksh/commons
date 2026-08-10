@@ -112,4 +112,94 @@ void main() {
       expect(find.text('Close'), findsOneWidget);
     });
   });
+
+  group('showFormBottomSheet (generic keyboard behavior)', () {
+    testWidgets('focuses the first input on open', (tester) async {
+      await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+          body: Builder(
+            builder: (context) => Center(
+              child: ElevatedButton(
+                onPressed: () => showFormBottomSheet<void>(
+                  context: context,
+                  builder: (_) => FormBottomSheet(
+                    title: 'Book',
+                    body: TextInput(label: 'Name'),
+                    confirmLabel: 'Confirm',
+                    onConfirm: () {},
+                  ),
+                ),
+                child: const Text('Open'),
+              ),
+            ),
+          ),
+        ),
+      ));
+
+      await tester.tap(find.text('Open'));
+      await tester.pumpAndSettle();
+
+      final EditableText editable = tester.widget<EditableText>(
+        find.byType(EditableText),
+      );
+      expect(editable.focusNode.hasFocus, isTrue,
+          reason: 'primary input must receive focus when the sheet opens');
+    });
+
+    testWidgets('insets bottom by keyboard height (pushes content up)', (
+      tester,
+    ) async {
+      // Simulate an open keyboard. The engine clamps viewInsets to
+      // viewPadding, so raise viewPadding alongside viewInsets.
+      tester.view.viewInsets = const FakeViewPadding(bottom: 300);
+      tester.view.viewPadding = const FakeViewPadding(bottom: 300);
+      addTearDown(() {
+        tester.view.resetViewInsets();
+        tester.view.resetViewPadding();
+      });
+
+      await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+          body: Builder(
+            builder: (context) => Center(
+              child: ElevatedButton(
+                onPressed: () => showFormBottomSheet<void>(
+                  context: context,
+                  builder: (_) => FormBottomSheet(
+                    title: 'Book',
+                    body: const SizedBox(height: 200),
+                    confirmLabel: 'Confirm',
+                    onConfirm: () {},
+                  ),
+                ),
+                child: const Text('Open'),
+              ),
+            ),
+          ),
+        ),
+      ));
+
+      await tester.tap(find.text('Open'));
+      await tester.pumpAndSettle();
+
+      // Invariant: the sheet's bottom padding must equal exactly the keyboard
+      // height the sheet context sees (however the platform reports it).
+      final double keyboardHeight = MediaQuery.viewInsetsOf(
+        tester.element(find.byType(FormBottomSheet)),
+      ).bottom;
+      expect(keyboardHeight, greaterThan(0),
+          reason: 'test setup must simulate an open keyboard');
+
+      final AnimatedPadding animatedPadding = tester.widget<AnimatedPadding>(
+        find.byWidgetPredicate(
+          (Widget w) =>
+              w is AnimatedPadding &&
+              w.padding.resolve(TextDirection.ltr).bottom > 0,
+        ),
+      );
+      expect(animatedPadding.padding.resolve(TextDirection.ltr).bottom,
+          keyboardHeight,
+          reason: 'sheet must ride above the keyboard');
+    });
+  });
 }

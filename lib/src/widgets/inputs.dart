@@ -14,6 +14,7 @@ class TextInput extends m.StatelessWidget {
     this.validator,
     this.keyboardType,
     this.textInputAction,
+    this.autofocus = false,
   });
 
   final String label;
@@ -27,12 +28,14 @@ class TextInput extends m.StatelessWidget {
   final m.FormFieldValidator<String>? validator;
   final m.TextInputType? keyboardType;
   final m.TextInputAction? textInputAction;
+  final bool autofocus;
 
   @override
   m.Widget build(m.BuildContext context) {
     return m.TextFormField(
       enabled: enabled,
       obscureText: obscure,
+      autofocus: autofocus,
       decoration: m.InputDecoration(
         labelText: label,
         hintText: hint,
@@ -60,6 +63,7 @@ class PasswordInput extends m.StatefulWidget {
     this.validator,
     this.keyboardType,
     this.textInputAction,
+    this.autofocus = false,
   });
 
   final String label;
@@ -71,6 +75,7 @@ class PasswordInput extends m.StatefulWidget {
   final m.FormFieldValidator<String>? validator;
   final m.TextInputType? keyboardType;
   final m.TextInputAction? textInputAction;
+  final bool autofocus;
 
   @override
   m.State<PasswordInput> createState() => _PasswordInputState();
@@ -83,6 +88,7 @@ class _PasswordInputState extends m.State<PasswordInput> {
   m.Widget build(m.BuildContext context) {
     return m.TextFormField(
       obscureText: _obscured,
+      autofocus: widget.autofocus,
       decoration: m.InputDecoration(
         labelText: widget.label,
         hintText: widget.hint,

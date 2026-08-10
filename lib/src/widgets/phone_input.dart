@@ -10,11 +10,13 @@ class PhoneInput extends m.StatelessWidget {
     this.onChanged,
     this.error,
     this.controller,
+    this.autofocus = false,
   });
 
   final m.ValueChanged<String>? onChanged;
   final String? error;
   final m.TextEditingController? controller;
+  final bool autofocus;
 
   static final RegExp _mobileRegex = RegExp(r'^[6-9]\d{9}$');
 
@@ -27,6 +29,7 @@ class PhoneInput extends m.StatelessWidget {
   m.Widget build(m.BuildContext context) {
     return m.TextFormField(
       controller: controller,
+      autofocus: autofocus,
       keyboardType: m.TextInputType.phone,
       maxLength: 10,
       decoration: m.InputDecoration(
