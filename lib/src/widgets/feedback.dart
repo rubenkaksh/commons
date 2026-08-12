@@ -1,5 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
+/// Generic loading state — renders a skeleton (via `flutter_skeletonizer` /
+/// the `skeletonizer` package) instead of the old spinner.
+///
+/// The placeholder texts are never painted; they only give the skeletonizer
+/// shapes to turn into bones, so the loading state reads as content-shaped
+/// grey bars rather than a circular indicator.
 class LoadingView extends StatelessWidget {
   const LoadingView({super.key, this.message});
 
@@ -7,16 +14,44 @@ class LoadingView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
     return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          const CircularProgressIndicator(),
-          if (message case final String text) ...[
-            const SizedBox(height: 16),
-            Text(text),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Skeletonizer(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  Text(
+                    'Loading title placeholder',
+                    style: theme.textTheme.titleMedium,
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    'Loading description placeholder that spans most of the line',
+                    style: theme.textTheme.bodyMedium,
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    'Another loading description placeholder line',
+                    style: theme.textTheme.bodyMedium,
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            ),
+            if (message case final String text) ...[
+              const SizedBox(height: 16),
+              Text(text),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }
