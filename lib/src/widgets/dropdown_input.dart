@@ -1,13 +1,13 @@
-import 'package:flutter/material.dart' as m;
+import 'package:flutter/material.dart';
 
 /// Dropdown select built in the style of the shared input family
-/// (`TextInput`/`PasswordInput`): the same [m.InputDecoration] contract
+/// (`TextInput`/`PasswordInput`): the same [InputDecoration] contract
 /// (label/hint/error) with a Material dropdown picker.
 ///
 /// Generic over [T] so the value can stay a raw id while the label differs
 /// (e.g. the turf selection screen shows raw turf ids today and will show
 /// friendly names later without changing callers).
-class DropdownInput<T> extends m.StatelessWidget {
+class DropdownInput<T> extends StatelessWidget {
   const DropdownInput({
     super.key,
     required this.label,
@@ -30,22 +30,22 @@ class DropdownInput<T> extends m.StatelessWidget {
   /// Currently selected value (null = nothing selected).
   final T? value;
 
-  final m.ValueChanged<T?>? onChanged;
+  final ValueChanged<T?>? onChanged;
 
   @override
-  m.Widget build(m.BuildContext context) {
-    return m.DropdownButtonFormField<T>(
-      value: value,
-      decoration: m.InputDecoration(
+  Widget build(BuildContext context) {
+    return DropdownButtonFormField<T>(
+      initialValue: value,
+      decoration: InputDecoration(
         labelText: label,
         hintText: hint,
         errorText: error,
       ),
-      items: <m.DropdownMenuItem<T>>[
+      items: <DropdownMenuItem<T>>[
         for (final (T value, String label) in items)
-          m.DropdownMenuItem<T>(
+          DropdownMenuItem<T>(
             value: value,
-            child: m.Text(label),
+            child: Text(label),
           ),
       ],
       // A null onChanged renders the field disabled (Flutter 3.32 idiom).

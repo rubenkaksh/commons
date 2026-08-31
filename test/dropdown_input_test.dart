@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart' as m;
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:commons/commons.dart';
@@ -11,11 +11,11 @@ void main() {
       ('a', 'Alpha'),
       ('b', 'Beta'),
     ],
-    m.ValueChanged<String?>? onChanged,
+    ValueChanged<String?>? onChanged,
   }) {
     return tester.pumpWidget(
-      m.MaterialApp(
-        home: m.Scaffold(
+      MaterialApp(
+        home: Scaffold(
           body: DropdownInput<String>(
             label: 'Pick one',
             hint: 'Choose an option',
@@ -59,8 +59,8 @@ void main() {
     WidgetTester tester,
   ) async {
     await tester.pumpWidget(
-      m.MaterialApp(
-        home: m.Scaffold(
+      MaterialApp(
+        home: Scaffold(
           body: const DropdownInput<String>(
             label: 'Pick one',
             items: <(String, String)>[('a', 'Alpha')],
@@ -76,8 +76,8 @@ void main() {
     WidgetTester tester,
   ) async {
     await tester.pumpWidget(
-      m.MaterialApp(
-        home: m.Scaffold(
+      MaterialApp(
+        home: Scaffold(
           body: const DropdownInput<String>(
             label: 'Pick one',
             items: <(String, String)>[('a', 'Alpha')],
@@ -86,9 +86,9 @@ void main() {
         ),
       ),
     );
-    final m.DropdownButtonFormField<String> field =
-        tester.widget<m.DropdownButtonFormField<String>>(
-          find.byType(m.DropdownButtonFormField<String>),
+    final DropdownButtonFormField<String> field =
+        tester.widget<DropdownButtonFormField<String>>(
+          find.byType(DropdownButtonFormField<String>),
         );
     expect(field.onChanged, isNull);
   });

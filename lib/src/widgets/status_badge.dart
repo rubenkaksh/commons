@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart' as m;
+import 'package:flutter/material.dart';
 
 enum BadgeTone { primary, success, warning, neutral }
 
-class StatusBadge extends m.StatelessWidget {
+class StatusBadge extends StatelessWidget {
   const StatusBadge({
     super.key,
     required this.label,
@@ -11,14 +11,14 @@ class StatusBadge extends m.StatelessWidget {
   });
 
   final String label;
-  final m.Widget? icon;
+  final Widget? icon;
   final BadgeTone tone;
 
   @override
-  m.Widget build(m.BuildContext context) {
-    final m.ColorScheme colors = m.Theme.of(context).colorScheme;
+  Widget build(BuildContext context) {
+    final ColorScheme colors = Theme.of(context).colorScheme;
 
-    final (m.Color bg, m.Color fg) = switch (tone) {
+    final (Color bg, Color fg) = switch (tone) {
       BadgeTone.primary => (colors.primaryContainer, colors.onPrimaryContainer),
       BadgeTone.success => (
         colors.secondaryContainer,
@@ -34,27 +34,27 @@ class StatusBadge extends m.StatelessWidget {
       ),
     };
 
-    return m.Container(
-      padding: const m.EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: m.BoxDecoration(
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
         color: bg,
-        borderRadius: m.BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(12),
       ),
-      child: m.Row(
-        mainAxisSize: m.MainAxisSize.min,
-        children: <m.Widget>[
-          if (icon case final m.Widget iconWidget) ...[
-            m.IconTheme(
-              data: m.IconThemeData(size: 14, color: fg),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          if (icon case final Widget iconWidget) ...[
+            IconTheme(
+              data: IconThemeData(size: 14, color: fg),
               child: iconWidget,
             ),
-            const m.SizedBox(width: 4),
+            const SizedBox(width: 4),
           ],
-          m.Text(
+          Text(
             label,
-            style: m.Theme.of(context).textTheme.labelSmall?.copyWith(
+            style: Theme.of(context).textTheme.labelSmall?.copyWith(
               color: fg,
-              fontWeight: m.FontWeight.w600,
+              fontWeight: FontWeight.w600,
             ),
           ),
         ],

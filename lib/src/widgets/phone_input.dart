@@ -1,10 +1,10 @@
-import 'package:flutter/material.dart' as m;
+import 'package:flutter/material.dart';
 
 /// A phone number input field with +977 prefix and 10-digit mobile validation.
 ///
 /// Validates 10-digit mobile numbers.
 /// Use [PhoneInput.isValid] to check validity programmatically.
-class PhoneInput extends m.StatelessWidget {
+class PhoneInput extends StatelessWidget {
   const PhoneInput({
     super.key,
     this.onChanged,
@@ -13,9 +13,9 @@ class PhoneInput extends m.StatelessWidget {
     this.autofocus = false,
   });
 
-  final m.ValueChanged<String>? onChanged;
+  final ValueChanged<String>? onChanged;
   final String? error;
-  final m.TextEditingController? controller;
+  final TextEditingController? controller;
   final bool autofocus;
 
   static final RegExp _mobileRegex = RegExp(r'^[6-9]\d{9}$');
@@ -26,25 +26,25 @@ class PhoneInput extends m.StatelessWidget {
   }
 
   @override
-  m.Widget build(m.BuildContext context) {
-    return m.TextFormField(
+  Widget build(BuildContext context) {
+    return TextFormField(
       controller: controller,
       autofocus: autofocus,
-      keyboardType: m.TextInputType.phone,
+      keyboardType: TextInputType.phone,
       maxLength: 10,
-      decoration: m.InputDecoration(
+      decoration: InputDecoration(
         labelText: 'Phone Number',
         hintText: '9876543210',
         errorText: error,
         counterText: '',
-        prefixIcon: const m.Padding(
-          padding: m.EdgeInsets.only(left: 12, right: 8),
-          child: m.Text(
+        prefixIcon: const Padding(
+          padding: EdgeInsets.only(left: 12, right: 8),
+          child: Text(
             '+977',
-            style: m.TextStyle(fontSize: 16),
+            style: TextStyle(fontSize: 16),
           ),
         ),
-        prefixIconConstraints: const m.BoxConstraints(
+        prefixIconConstraints: const BoxConstraints(
           minWidth: 0,
           minHeight: 0,
         ),

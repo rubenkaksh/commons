@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart' as m;
+import 'package:flutter/material.dart';
 
 import '../widgets/buttons.dart';
 import '../widgets/inputs.dart';
@@ -13,9 +13,9 @@ part 'login_screen_impl.dart';
 /// them here — strings/localization, loading/error/authenticated state, and
 /// the submit + post-login navigation behaviour all stay app-owned.
 ///
-/// The screen itself is framework-free: pure Flutter + [m.ValueNotifier], no
+/// The screen itself is framework-free: pure Flutter + [ValueNotifier], no
 /// bloc/riverpod/get_it/routing inside the package, zero hardcoded strings.
-class LoginScreen extends m.StatefulWidget {
+class LoginScreen extends StatefulWidget {
   const LoginScreen({
     super.key,
     required this.displayTexts,
@@ -36,16 +36,16 @@ class LoginScreen extends m.StatefulWidget {
   /// Opt-in registration entry. When non-null, a "Create an account" button
   /// is rendered under the form and invoked on tap (the app owns navigation,
   /// e.g. pushing its register screen).
-  final m.VoidCallback? onRegisterTap;
+  final VoidCallback? onRegisterTap;
 
   @override
-  m.State<LoginScreen> createState() => _LoginScreenState();
+  State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends m.State<LoginScreen> {
-  final m.GlobalKey<m.FormState> _formKey = m.GlobalKey<m.FormState>();
-  final m.TextEditingController _emailController = m.TextEditingController();
-  final m.TextEditingController _passwordController = m.TextEditingController();
+class _LoginScreenState extends State<LoginScreen> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
   @override
   void initState() {
@@ -74,15 +74,15 @@ class _LoginScreenState extends m.State<LoginScreen> {
   }
 
   @override
-  m.Widget build(m.BuildContext context) {
-    return m.Scaffold(
-      appBar: m.AppBar(title: m.Text(widget.displayTexts.appBarTitle)),
-      body: m.SafeArea(
-        child: m.Center(
-          child: m.SingleChildScrollView(
-            padding: const m.EdgeInsets.all(24),
-            child: m.ConstrainedBox(
-              constraints: const m.BoxConstraints(maxWidth: 440),
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text(widget.displayTexts.appBarTitle)),
+      body: SafeArea(
+        child: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(24),
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 440),
               child: _buildForm(context),
             ),
           ),
@@ -91,70 +91,70 @@ class _LoginScreenState extends m.State<LoginScreen> {
     );
   }
 
-  m.Widget _buildForm(m.BuildContext context) {
-    return m.Form(
+  Widget _buildForm(BuildContext context) {
+    return Form(
       key: _formKey,
-      child: m.Column(
-        crossAxisAlignment: m.CrossAxisAlignment.stretch,
-        children: <m.Widget>[
-          m.Text(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Text(
             widget.displayTexts.subtitle,
-            style: m.Theme.of(context).textTheme.headlineMedium,
+            style: Theme.of(context).textTheme.headlineMedium,
           ),
-          const m.SizedBox(height: 8),
-          m.Text(
+          const SizedBox(height: 8),
+          Text(
             widget.displayTexts.description,
-            style: m.Theme.of(context).textTheme.bodyLarge,
+            style: Theme.of(context).textTheme.bodyLarge,
           ),
-          const m.SizedBox(height: 24),
+          const SizedBox(height: 24),
           TextInput(
             label: widget.displayTexts.emailLabel,
-            keyboardType: m.TextInputType.emailAddress,
-            textInputAction: m.TextInputAction.next,
+            keyboardType: TextInputType.emailAddress,
+            textInputAction: TextInputAction.next,
             controller: _emailController,
             validator: widget.displayTexts.emailValidator,
           ),
-          const m.SizedBox(height: 16),
+          const SizedBox(height: 16),
           PasswordInput(
             label: widget.displayTexts.passwordLabel,
-            keyboardType: m.TextInputType.visiblePassword,
-            textInputAction: m.TextInputAction.done,
+            keyboardType: TextInputType.visiblePassword,
+            textInputAction: TextInputAction.done,
             controller: _passwordController,
             validator: widget.displayTexts.passwordValidator,
             onFieldSubmitted: (String _) => _onSubmit(),
           ),
-          m.ValueListenableBuilder<String?>(
+          ValueListenableBuilder<String?>(
             valueListenable: widget.asyncData.errorMessage,
-            builder: (m.BuildContext c, String? message, m.Widget? _) {
+            builder: (BuildContext c, String? message, Widget? _) {
               if (message == null) {
-                return const m.SizedBox.shrink();
+                return const SizedBox.shrink();
               }
-              return m.Padding(
-                padding: const m.EdgeInsets.only(top: 16),
-                child: m.Text(
+              return Padding(
+                padding: const EdgeInsets.only(top: 16),
+                child: Text(
                   message,
-                  style: m.TextStyle(color: m.Theme.of(c).colorScheme.error),
+                  style: TextStyle(color: Theme.of(c).colorScheme.error),
                 ),
               );
             },
           ),
-          const m.SizedBox(height: 24),
-          m.ValueListenableBuilder<bool>(
+          const SizedBox(height: 24),
+          ValueListenableBuilder<bool>(
             valueListenable: widget.asyncData.isLoading,
-            builder: (m.BuildContext c, bool loading, m.Widget? _) {
-              return m.Column(
-                children: <m.Widget>[
+            builder: (BuildContext c, bool loading, Widget? _) {
+              return Column(
+                children: <Widget>[
                   AppFilledButton(
                     text: widget.displayTexts.submitLabel,
-                    icon: loading ? null : const m.Icon(m.Icons.login),
+                    icon: loading ? null : const Icon(Icons.login),
                     isLoading: loading,
                     onPressed: loading ? null : _onSubmit,
                   ),
-                  if (widget.enableGoogleSignIn) ...<m.Widget>[
-                    const m.SizedBox(height: 12),
+                  if (widget.enableGoogleSignIn) ...<Widget>[
+                    const SizedBox(height: 12),
                     AppFilledButton(
                       text: widget.displayTexts.googleSignInLabel,
-                      icon: const m.Icon(m.Icons.g_mobiledata),
+                      icon: const Icon(Icons.g_mobiledata),
                       isLoading: loading,
                       onPressed: loading ? null : _onGoogleSignIn,
                     ),
@@ -163,17 +163,17 @@ class _LoginScreenState extends m.State<LoginScreen> {
               );
             },
           ),
-          const m.SizedBox(height: 12),
+          const SizedBox(height: 12),
           AppOutlinedButton(
             text: widget.displayTexts.fillDemoLabel,
-            icon: const m.Icon(m.Icons.key_outlined),
+            icon: const Icon(Icons.key_outlined),
             onPressed: _fillDemoCredentials,
           ),
-          if (widget.onRegisterTap != null) ...<m.Widget>[
-            const m.SizedBox(height: 12),
-            m.TextButton(
+          if (widget.onRegisterTap != null) ...<Widget>[
+            const SizedBox(height: 12),
+            TextButton(
               onPressed: widget.onRegisterTap,
-              child: m.Text(widget.displayTexts.registerLabel),
+              child: Text(widget.displayTexts.registerLabel),
             ),
           ],
         ],
@@ -191,7 +191,7 @@ class _LoginScreenState extends m.State<LoginScreen> {
   }
 
   Future<void> _onSubmit() async {
-    final m.FormState? formState = _formKey.currentState;
+    final FormState? formState = _formKey.currentState;
     if (formState == null || !formState.validate()) {
       return;
     }

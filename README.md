@@ -8,11 +8,10 @@ Shared atomic widgets and design-system pieces for forkable-derived apps.
 import "package:commons/commons.dart";
 ```
 
-> **Name collisions with material:** `buttons.dart` exports `FilledButton`,
-> `IconButton`, `OutlineButton`; `typography.dart` exports `Title` — these shadow
-> the material classes. Follow the codebase convention of importing material
-> with a prefix (`import "package:flutter/material.dart" as m;`), or use
-> `hide FilledButton, IconButton, OutlineButton, Title` on the commons import.
+> **Name collisions with material:** widgets that would collide with material
+> exports carry an `App` prefix (`AppFilledButton`, `AppIconButton`,
+> `AppOutlinedButton`, `AppTitle`). No import aliases or `hide` clauses are
+> needed when importing both libraries.
 
 ## Content
 
