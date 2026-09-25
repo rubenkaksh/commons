@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 
+import '../l10n/commons_strings.dart';
 import 'app_exception.dart';
 
 class DioApiClient {
@@ -7,7 +8,9 @@ class DioApiClient {
     required String baseUrl,
     Dio? dio,
     this.getCacheTtl = const Duration(seconds: 30),
-  }) : _dio =
+    CommonsStrings strings = const CommonsStrings(),
+  }) : _strings = strings,
+       _dio =
            dio ??
            Dio(
              BaseOptions(
@@ -19,6 +22,9 @@ class DioApiClient {
            );
 
   final Dio _dio;
+
+  /// User-facing messages for mapped errors; override for l10n.
+  final CommonsStrings _strings;
 
   /// How long successful GET responses stay in the in-memory cache. Kept
   /// short on purpose: the cache only serves fast re-selects (e.g. switching
@@ -66,13 +72,13 @@ class DioApiClient {
     if (type == DioExceptionType.connectionTimeout ||
         type == DioExceptionType.receiveTimeout ||
         type == DioExceptionType.sendTimeout) {
-      return const AppTimeoutException(
-        'The server took too long to respond. Please try again.',
+      return AppTimeoutException(
+        _strings.timeoutError,
       );
     }
     if (type == DioExceptionType.connectionError) {
-      return const AppOfflineException(
-        'You appear to be offline. Check your connection and try again.',
+      return AppOfflineException(
+        _strings.offlineError,
       );
     }
 
@@ -81,17 +87,17 @@ class DioApiClient {
       final String? serverMessage = _serverMessage(e.response?.data);
       if (statusCode >= 500) {
         return AppServerException(
-          serverMessage ?? 'Server error (HTTP $statusCode). Please try again later.',
+          serverMessage ?? _strings.serverError(statusCode),
           statusCode: statusCode,
         );
       }
       return AppClientException(
-        serverMessage ?? 'Request failed (HTTP $statusCode).',
+        serverMessage ?? _strings.clientError(statusCode),
         statusCode: statusCode,
       );
     }
 
-    return const AppUnexpectedException('Something went wrong. Please try again.');
+    return AppUnexpectedException(_strings.unexpectedError);
   }
 
   static String? _serverMessage(Object? data) {

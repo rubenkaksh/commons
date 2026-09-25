@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 
+/// Elevated (tonal-shadow) button. Prefer [AppFilledButton] for the primary
+/// call to action: it is the Material 3 primary style and adds icon and
+/// loading states.
+@Deprecated('Use AppFilledButton for primary actions. Removal after v0.9.0.')
 class PrimaryButton extends StatelessWidget {
   const PrimaryButton({
     super.key,

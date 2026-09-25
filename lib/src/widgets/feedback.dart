@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
+import '../l10n/commons_strings.dart';
+
 /// Generic loading state — renders a skeleton (via `flutter_skeletonizer` /
 /// the `skeletonizer` package) instead of the old spinner.
 ///
@@ -74,7 +76,10 @@ class ErrorView extends StatelessWidget {
           Text(message, textAlign: TextAlign.center),
           if (onRetry != null) ...[
             const SizedBox(height: 16),
-            ElevatedButton(onPressed: onRetry, child: const Text('Retry')),
+            ElevatedButton(
+              onPressed: onRetry,
+              child: Text(CommonsStrings.of(context).retry),
+            ),
           ],
         ],
       ),
@@ -145,7 +150,10 @@ class StateSwitcher extends StatelessWidget {
       case LoadState.error:
         final Widget Function()? errorBuilder = error;
         return errorBuilder == null
-            ? ErrorView(message: 'Something went wrong.', onRetry: onRetry)
+            ? ErrorView(
+                message: CommonsStrings.of(context).genericError,
+                onRetry: onRetry,
+              )
             : errorBuilder();
       case LoadState.empty:
         return empty ?? const EmptyView();

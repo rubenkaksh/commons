@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../l10n/commons_strings.dart';
+
 /// A generic bottom sheet with title, scrollable body, and confirm/cancel CTAs.
 ///
 /// Use [showFormBottomSheet] to display this as a modal bottom sheet.
@@ -18,7 +20,7 @@ class FormBottomSheet extends StatelessWidget {
     required this.confirmLabel,
     required this.onConfirm,
     this.subtitle,
-    this.cancelLabel = 'Cancel',
+    this.cancelLabel,
     this.onCancel,
     this.confirmEnabled = true,
   });
@@ -28,7 +30,8 @@ class FormBottomSheet extends StatelessWidget {
   final Widget body;
   final String confirmLabel;
   final VoidCallback? onConfirm;
-  final String cancelLabel;
+  /// Cancel button label; null uses [CommonsStrings.cancel].
+  final String? cancelLabel;
   final VoidCallback? onCancel;
   final bool confirmEnabled;
 
@@ -89,7 +92,9 @@ class FormBottomSheet extends StatelessWidget {
                     Expanded(
                       child: OutlinedButton(
                         onPressed: onCancel ?? () => Navigator.pop(context),
-                        child: Text(cancelLabel),
+                        child: Text(
+                          cancelLabel ?? CommonsStrings.of(context).cancel,
+                        ),
                       ),
                     ),
                     const SizedBox(width: 12),

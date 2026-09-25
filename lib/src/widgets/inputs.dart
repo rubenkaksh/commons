@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../l10n/commons_strings.dart';
+
 class TextInput extends StatelessWidget {
   const TextInput({
     super.key,
@@ -98,7 +100,9 @@ class _PasswordInputState extends State<PasswordInput> {
           icon: Icon(
             _obscured ? Icons.visibility_off : Icons.visibility,
           ),
-          tooltip: _obscured ? 'Show password' : 'Hide password',
+          tooltip: _obscured
+              ? CommonsStrings.of(context).showPassword
+              : CommonsStrings.of(context).hidePassword,
         ),
       ),
       onChanged: widget.onChanged,

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import 'brand_colors.dart';
 import 'groups/button_themes.dart';
 import 'groups/input_themes.dart';
 import 'groups/list_themes.dart';
@@ -35,6 +36,7 @@ abstract final class ComponentThemes {
     required Brightness brightness,
     BorderRadius borderRadius = defaultRadius,
     OutlinedBorder buttonShape = defaultButtonShape,
+    BrandColors? brandColors,
   }) {
     final bool isLight = brightness == Brightness.light;
     const BorderRadius dialogRadius = BorderRadius.all(Radius.circular(28));
@@ -44,6 +46,9 @@ abstract final class ComponentThemes {
       brightness: brightness,
       colorScheme: colorScheme,
       textTheme: textTheme,
+      extensions: <ThemeExtension<dynamic>>[
+        brandColors ?? (isLight ? BrandColors.light : BrandColors.dark),
+      ],
       scaffoldBackgroundColor: colorScheme.surface,
       canvasColor: colorScheme.surfaceContainerLow,
       dividerColor: colorScheme.outlineVariant,
