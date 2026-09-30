@@ -8,9 +8,11 @@ environment:
   flutter: ">=1.17.0"
 
 dependencies:
+  cached_network_image: ^4.0.2
   dio: ^5.9.2
   flutter:
     sdk: flutter
+  flutter_svg: ^2.3.0
   google_sign_in: ^7.2.0
   skeletonizer: ^2.1.3
 

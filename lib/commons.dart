@@ -13,6 +13,8 @@ export 'src/theme/color_extensions.dart';
 export 'src/theme/component_themes.dart';
 export 'src/theme/typography.dart';
 
+export 'src/widgets/app_carousel.dart';
+export 'src/widgets/app_image.dart';
 export 'src/widgets/avatar_stack.dart';
 export 'src/widgets/bottom_sheet.dart';
 export 'src/widgets/buttons.dart';
