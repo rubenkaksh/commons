@@ -23,6 +23,8 @@ class FormBottomSheet extends StatelessWidget {
     this.cancelLabel,
     this.onCancel,
     this.confirmEnabled = true,
+    this.footer,
+    this.showDragHandle = false,
   });
 
   final String title;
@@ -34,6 +36,12 @@ class FormBottomSheet extends StatelessWidget {
   final String? cancelLabel;
   final VoidCallback? onCancel;
   final bool confirmEnabled;
+  /// Optional content rendered below the confirm/cancel CTA row, inside the
+  /// same horizontal padding — e.g. terms text.
+  final Widget? footer;
+  /// Whether a drag handle is rendered centred at the very top of the sheet,
+  /// above the header. Defaults to false.
+  final bool showDragHandle;
 
   @override
   Widget build(BuildContext context) {
@@ -57,6 +65,22 @@ class FormBottomSheet extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
+              // Drag handle (above the header)
+              if (showDragHandle)
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 12),
+                    child: Container(
+                      key: const Key('formBottomSheetDragHandle'),
+                      width: 32,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: colors.onSurfaceVariant.withValues(alpha: 0.4),
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                  ),
+                ),
               // Header
               Padding(
                 padding: const EdgeInsets.fromLTRB(24, 20, 24, 0),
@@ -87,23 +111,31 @@ class FormBottomSheet extends StatelessWidget {
               // CTAs
               Padding(
                 padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
-                child: Row(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
-                    Expanded(
-                      child: OutlinedButton(
-                        onPressed: onCancel ?? () => Navigator.pop(context),
-                        child: Text(
-                          cancelLabel ?? CommonsStrings.of(context).cancel,
+                    Row(
+                      children: <Widget>[
+                        Expanded(
+                          child: OutlinedButton(
+                            onPressed: onCancel ?? () => Navigator.pop(context),
+                            child: Text(
+                              cancelLabel ?? CommonsStrings.of(context).cancel,
+                            ),
+                          ),
                         ),
-                      ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: FilledButton(
+                            onPressed: confirmEnabled ? onConfirm : null,
+                            child: Text(confirmLabel),
+                          ),
+                        ),
+                      ],
                     ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: FilledButton(
-                        onPressed: confirmEnabled ? onConfirm : null,
-                        child: Text(confirmLabel),
-                      ),
-                    ),
+                    if (footer case final footer?) ...[
+                      footer,
+                    ],
                   ],
                 ),
               ),

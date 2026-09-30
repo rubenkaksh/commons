@@ -238,4 +238,82 @@ void main() {
           reason: 'sheet must fit the 200px body plus header and CTAs');
     });
   });
+
+  group('FormBottomSheet footer & drag handle', () {
+    testWidgets('drag handle hidden by default', (tester) async {
+      await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+          body: FormBottomSheet(
+            title: 'Title',
+            body: const SizedBox(),
+            confirmLabel: 'Confirm',
+            onConfirm: () {},
+          ),
+        ),
+      ));
+      expect(find.byKey(const Key('formBottomSheetDragHandle')), findsNothing);
+    });
+
+    testWidgets('drag handle renders centred at 32x4 when showDragHandle is true', (
+      tester,
+    ) async {
+      await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+          body: FormBottomSheet(
+            title: 'Title',
+            body: const SizedBox(),
+            confirmLabel: 'Confirm',
+            onConfirm: () {},
+            showDragHandle: true,
+          ),
+        ),
+      ));
+      final Finder handle = find.byKey(const Key('formBottomSheetDragHandle'));
+      expect(handle, findsOneWidget);
+      expect(tester.getSize(handle), const Size(32, 4));
+      // Centred horizontally within the sheet.
+      final Rect handleRect = tester.getRect(handle);
+      final Rect sheetRect = tester.getRect(find.byType(FormBottomSheet));
+      expect(handleRect.center.dx, closeTo(sheetRect.center.dx, 0.01),
+          reason: 'drag handle must be centred');
+    });
+
+    testWidgets('footer renders below the confirm button', (tester) async {
+      await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+          body: FormBottomSheet(
+            title: 'Title',
+            body: const SizedBox(),
+            confirmLabel: 'Confirm',
+            onConfirm: () {},
+            footer: const Text('Terms apply'),
+          ),
+        ),
+      ));
+      final Finder footer = find.text('Terms apply');
+      expect(footer, findsOneWidget);
+      final double footerTop = tester.getTopLeft(footer).dy;
+      final double confirmBottom = tester.getBottomLeft(find.text('Confirm')).dy;
+      expect(footerTop >= confirmBottom, isTrue,
+          reason: 'footer must render below the confirm/cancel CTA row '
+              '(footer top $footerTop vs confirm bottom $confirmBottom)');
+    });
+
+    testWidgets('no footer widget is rendered when footer is omitted', (
+      tester,
+    ) async {
+      await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+          body: FormBottomSheet(
+            title: 'Title',
+            body: const SizedBox(),
+            confirmLabel: 'Confirm',
+            onConfirm: () {},
+          ),
+        ),
+      ));
+      expect(find.text('Terms apply'), findsNothing);
+      expect(find.text('Confirm'), findsOneWidget);
+    });
+  });
 }
