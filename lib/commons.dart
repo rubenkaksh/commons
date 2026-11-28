@@ -1,6 +1,7 @@
 /// Shared atomic widgets & design-system pieces for forkable-derived apps.
 library;
 
+export 'src/analytics/analytics.dart';
 export 'src/auth/google_sign_in_service.dart';
 export 'src/auth/google_sign_in_service_impl.dart';
 export 'src/auth/login_screen.dart';
