@@ -5,14 +5,18 @@ class FakeBackend implements AnalyticsBackend {
   final List<String> calls = <String>[];
   Map<String, Object>? lastProps;
   bool throwOnCapture = false;
+  bool throwOnSetup = false;
+  bool throwOnRegister = false;
 
   @override
   Future<void> setup(String projectToken, String host) async {
+    if (throwOnSetup) throw Exception('boom');
     calls.add('setup:$projectToken:$host');
   }
 
   @override
   Future<void> register(String key, Object value) async {
+    if (throwOnRegister) throw Exception('boom');
     calls.add('register:$key:$value');
   }
 
@@ -137,6 +141,56 @@ void main() {
     backend.throwOnCapture = true;
 
     await analytics.track('run_started');
+
+    expect(analytics.isReady, isTrue);
+    backend.throwOnCapture = false;
+    await analytics.track('run_started');
+    expect(backend.calls, contains('capture:run_started'));
+  });
+
+  test('init swallows setup errors and stays disabled', () async {
+    backend.throwOnSetup = true;
+    await analytics.init(cfg());
+
+    expect(analytics.isReady, isFalse);
+    await analytics.track('run_started');
+    expect(backend.calls.where((c) => c.startsWith('capture:')), isEmpty);
+  });
+
+  test('init swallows register errors and stays disabled', () async {
+    backend.throwOnRegister = true;
+    await analytics.init(cfg());
+
+    expect(analytics.isReady, isFalse);
+  });
+
+  test('re-init with a disabled config disables sending', () async {
+    await analytics.init(cfg());
+    await analytics.init(cfg(env: AnalyticsEnv.dev));
+
+    expect(analytics.isReady, isFalse);
+    await analytics.track('run_started');
+    expect(backend.calls.where((c) => c.startsWith('capture:')), isEmpty);
+  });
+
+  test('optOut before init is applied after setup', () async {
+    await analytics.optOut();
+    expect(backend.calls, isEmpty);
+
+    await analytics.init(cfg());
+    expect(backend.calls, contains('optOut'));
+    expect(
+      backend.calls.indexOf('optOut'),
+      greaterThan(backend.calls.lastIndexWhere((c) => c.startsWith('register:'))),
+    );
+  });
+
+  test('optIn before init clears a remembered optOut', () async {
+    await analytics.optOut();
+    await analytics.optIn();
+    await analytics.init(cfg());
+
+    expect(backend.calls, isNot(contains('optOut')));
   });
 
   test('screen, optOut and optIn forward after init, inert before', () async {

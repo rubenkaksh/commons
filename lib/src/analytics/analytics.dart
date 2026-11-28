@@ -77,8 +77,14 @@ abstract class AnalyticsBackend {
 ///
 /// On web, `Posthog().setup` does nothing. The app must load posthog-js in
 /// `web/index.html` and call
-/// `posthog.init('<token>', {api_host: 'https://eu.i.posthog.com', persistence: 'localStorage'})`.
-/// That keeps a saved anonymous id and sets no cookies.
+/// `posthog.init('<token>', {api_host: 'https://eu.i.posthog.com', persistence: 'localStorage', autocapture: false, capture_pageview: false, disable_session_recording: true})`.
+/// That keeps a saved anonymous id and sets no cookies. Load this snippet only
+/// in prod builds, because the dev/token gate and `allowedEvents` do not cover
+/// posthog-js itself.
+///
+/// On Android and iOS, set `com.posthog.posthog.AUTO_INIT` to false
+/// (AndroidManifest meta-data / Info.plist) so the Dart `setup` call is the
+/// one that takes effect.
 class PosthogBackend implements AnalyticsBackend {
   /// Creates a backend that uses the shared `Posthog()` instance.
   const PosthogBackend();
@@ -119,7 +125,7 @@ class PosthogBackend implements AnalyticsBackend {
 /// Thin product-analytics wrapper so apps never import `posthog_flutter`.
 ///
 /// Call [init] once at startup. Every other method is a no-op until [init]
-/// has enabled analytics. Backend errors are logged and never thrown.
+/// has enabled analytics. Never throws: backend and init errors are logged.
 class Analytics {
   /// Creates an analytics client. Uses [PosthogBackend] when [backend] is null.
   Analytics({AnalyticsBackend? backend})
@@ -131,6 +137,7 @@ class Analytics {
 
   AnalyticsConfig? _config;
   bool _ready = false;
+  bool _pendingOptOut = false;
 
   /// Whether [init] enabled analytics, so events are sent.
   bool get isReady => _ready;
@@ -138,20 +145,28 @@ class Analytics {
   /// Stores [config] and, when it is enabled, sets up the SDK.
   ///
   /// Registers the super-properties `app`, `app_version`, `platform` and
-  /// `env`. Errors from the SDK setup are rethrown.
+  /// `env`. Never throws: failures are logged and analytics stays disabled.
+  /// An opt-out made before or during init is applied right after setup.
   Future<void> init(AnalyticsConfig config) async {
+    _ready = false;
     _config = config;
     if (!config.enabled) return;
 
-    await _backend.setup(config.projectToken, config.host);
-    await _backend.register('app', config.app);
-    await _backend.register('app_version', config.appVersion);
-    await _backend.register(
-      'platform',
-      kIsWeb ? 'web' : defaultTargetPlatform.name,
-    );
-    await _backend.register('env', config.env.name);
-    _ready = true;
+    try {
+      await _backend.setup(config.projectToken, config.host);
+      await _backend.register('app', config.app);
+      await _backend.register('app_version', config.appVersion);
+      await _backend.register(
+        'platform',
+        kIsWeb ? 'web' : defaultTargetPlatform.name,
+      );
+      await _backend.register('env', config.env.name);
+      _ready = true;
+      if (_pendingOptOut) await _backend.optOut();
+    } catch (error) {
+      debugPrint('analytics: init failed: $error');
+      _ready = false;
+    }
   }
 
   /// Sends the event [event] with [properties].
@@ -184,14 +199,19 @@ class Analytics {
     await _guard(() => _backend.screen(name));
   }
 
-  /// Stops sending events for this user. Does nothing when not ready.
+  /// Stops sending events for this user.
+  ///
+  /// Remembered when called before or during init, and applied right after
+  /// setup.
   Future<void> optOut() async {
+    _pendingOptOut = true;
     if (!_ready) return;
     await _guard(_backend.optOut);
   }
 
-  /// Resumes sending events for this user. Does nothing when not ready.
+  /// Resumes sending events for this user, clearing any remembered opt-out.
   Future<void> optIn() async {
+    _pendingOptOut = false;
     if (!_ready) return;
     await _guard(_backend.optIn);
   }
